@@ -1,0 +1,705 @@
+Govindani NGO OS - All User Type Options Blueprint
+Role-wise dashboards, menus, buttons, permissions, restrictions, audit rules and SaaS plan visibility
+Document Purpose: This file defines exactly what each user type can see and do inside Govindani NGO OS. Developers must implement role-based routing, tenant isolation, plan locks, audit logs, and visible upgrade prompts exactly as described. This document extends the Super Admin options blueprint to every user type in the system.
+1. Non-Negotiable Role Architecture
+Every login must resolve role, tenant, plan, permissions and add-on status before dashboard render.
+Every user type gets a separate dashboard experience. Do not dump all users into one admin panel.
+All modules remain visible where commercially useful, but locked modules must show upgrade motivation, not dead errors.
+Tenant users cannot access another NGO tenant. Internal Govindani users require explicit support/admin permissions.
+Sensitive exports like PAN, 10BD, 10BE, bank reconciliation and compliance files require separate export permission.
+Workflow
+Required System Behaviour
+Login Routing
+After login, identify tenant_id, role_id, plan_id, permission set, add-on status, and route to role-specific dashboard.
+Locked Feature Display
+Show locked modules with blur/lock card, plan required, benefit statement, Upgrade CTA. Do not hide feature cards.
+Audit Logging
+Every create/edit/delete/export/send/approve/impersonate/payment action creates audit log with user, role, tenant, timestamp, IP/device, old/new data where applicable.
+Data Isolation
+Every query must be tenant-scoped unless Govindani Super Admin internal view is used.
+Soft Delete
+Financial, donation, receipt, compliance, membership payment, payout, and audit records are never hard deleted by tenant users.
+Notification
+Role-specific notifications are sent by in-app alert, email, WhatsApp/SMS where enabled and paid.
+2. Role and Plan Availability Matrix
+Plan
+Roles Available
+Locked/Restricted Roles
+Starter
+NGO Owner, Operations basic, Volunteer, Donor, Membership, Website, Accounts basic
+CA/Fundraiser/Agency/Telecaller/Event advanced/CSR mgmt/API locked
+Growth
+Starter + CA, Fundraising Manager, Agency, Telecaller, Fundraiser, Event, Beneficiary, Advanced Reports
+CSR Management, Grant Tracking, API, Multi-branch, Advanced AI locked
+Pro
+Everything Growth + CSR Manager, Grant Tracking, API, Multi-branch, Advanced Permissions
+Enterprise-only dedicated server/white label/custom infra
+Enterprise Hidden
+Dedicated server, white label, dedicated support, custom compliance/account team
+Custom pricing and approval only
+3. Permission Summary Matrix
+User Type
+Allowed Core Area
+Critical Restriction
+Super Admin
+All platform controls, tenant management, billing, impersonation
+Internal only, audit mandatory
+NGO Owner
+All tenant controls, users, billing view, receipt settings
+Cannot access other tenants
+CA/Auditor
+Compliance reports, 10BD/10BE, reconciliation
+PAN export separate permission
+Operations Manager
+Volunteers, events, cases, memberships, certificates
+No financial/compliance export
+Fundraising Manager
+Fundraisers, agencies, telecallers, leads, commissions
+No statutory compliance edits
+Agency Owner
+Own agency team, assigned campaigns/leads, own commission
+No full donor DB
+Telecaller
+Assigned leads/followups only
+No export, no PAN
+Fundraiser
+Own links, QR, donations summary, payout request
+No full donor details
+Volunteer
+Events, hours, certificates
+No admin data
+Donor
+Own profile, receipts, certificates, membership
+Own data only
+Membership Manager
+Memberships, cards, certificates, renewals
+No subscription control
+Website Manager
+CMS pages, blogs, gallery, colors
+No layout/code edit
+Accounts Manager
+Ledgers, reconciliation, payouts
+No plan/user control
+CSR Manager
+CSR/grants/proposals
+Pro only
+Support Agent
+Tickets, migration, imports
+Internal support only
+4. Global UI Rules for All User Types
+Sidebar must show only relevant direct menus plus locked upgrade cards where plan upsell is intended.
+Every dashboard top bar must show NGO name, current role, current plan, notification bell, help/ticket button, and profile menu.
+Every action button must either perform action, open modal/drawer, redirect to exact page, or display plan lock modal.
+Every export button must check export permission and log filters, row count, file type, timestamp and user.
+Every delete action must be labelled Archive/Deactivate/Soft Delete unless it is non-statutory content like draft blog or unused template.
+5. User Type Details
+1. Govindani Super Admin
+Item
+Specification
+User Type
+Platform owner role
+Plan Availability
+Internal only
+Purpose
+Create NGOs, control subscriptions, billing, support, plan access, add-ons, compliance templates, platform settings, and impersonation.
+Dashboard Must Show
+SaaS command center: active NGOs, MRR, overdue invoices, plan distribution, support tickets, failed payments, add-on usage, platform alerts.
+Blocked / Not Allowed
+Cannot edit donor/donation data silently. Any impersonation, plan change, deletion, bulk import, or credit adjustment must create audit log.
+Critical Developer Rule
+Hard delete is disabled by default. Permanent deletion is internal-only, dual-confirmed, reason-required, and must never apply to statutory donation/receipt/compliance records.
+Menus / Screens
+Dashboard
+NGO Tenants
+Subscriptions
+Plans & Coupons
+Billing & GST Invoices
+Add-ons & Credits
+Support Desk
+Bulk Upload Queue
+Website Migration Queue
+Campaign Creation Orders
+Compliance Templates
+Global Reports
+User Impersonation
+Audit Logs
+System Settings
+Primary Buttons / Actions
+Create NGO
+Edit Tenant
+Suspend NGO
+Restore NGO
+Impersonate NGO
+Change Plan
+Apply Coupon
+Generate Invoice
+Add Credits
+Approve Bulk Upload
+Assign Support Ticket
+Download Platform Report
+View Audit
+2. NGO Owner / Supreme Admin
+Item
+Specification
+User Type
+Tenant owner role
+Plan Availability
+Starter onward
+Purpose
+Owns complete NGO tenant: users, website, donations, campaigns, receipts, branding, bank accounts, membership, volunteers, cases, and subscription view.
+Dashboard Must Show
+NGO health: donations, receipts, donors, active cases, events, volunteers, members, compliance countdown, usage meters, locked upgrade cards.
+Blocked / Not Allowed
+Cannot see Govindani SaaS revenue, other NGO tenants, platform coupons, or global system settings.
+Critical Developer Rule
+Only this role can approve post-receipt donation edits, configure receipt numbering, approve plan downgrade request, and enable/disable auto receipt generation.
+Menus / Screens
+Dashboard
+Donors
+Donations
+Campaigns/Cases
+Website CMS
+Memberships
+Volunteers
+Events
+Reports
+Users & Roles
+Bank Accounts
+Billing/Plan
+Settings
+Audit Logs
+Primary Buttons / Actions
+Add Donor
+Record Donation
+Create Case
+Create Campaign
+Publish Page
+Create Member
+Create Event
+Invite User
+Assign Role
+Download Receipt
+Generate Report
+Upgrade Plan
+3. CA / Auditor
+Item
+Specification
+User Type
+Compliance expert role
+Plan Availability
+Growth onward; configurable in Pro
+Purpose
+Manage or review statutory reports, 80G, 10BD, 10BE, bank reconciliation, compliance validation, and audit reports.
+Dashboard Must Show
+CA department: missing PAN/address, 10BD readiness, 10BE pending, receipt register, bank reconciliation, FCRA toggle, compliance calendar.
+Blocked / Not Allowed
+No campaign editing, website editing, fundraiser assignment, donor marketing, or role management unless explicitly granted.
+Critical Developer Rule
+Export permissions are separate from view permissions. PAN export/full compliance export requires explicit permission and audit log.
+Menus / Screens
+CA Dashboard
+80G Register
+10BD Export
+10BE Import/Dispatch
+Donation Register
+Bank Reconciliation
+Membership Revenue Register
+GST/TDS Registers
+Audit Reports
+Data Quality
+Primary Buttons / Actions
+Run Validation
+Download 10BD
+Import 10BE ZIP
+Manual Match
+Approve Dispatch
+Export Register
+Mark Reconciled
+Raise Data Query
+4. Operations Manager / Custom Manager
+Item
+Specification
+User Type
+NGO operations role
+Plan Availability
+Starter onward; deeper controls Growth onward
+Purpose
+Manage daily operations: volunteers, events, beneficiaries, appointments, memberships, staff tasks, and case coordination.
+Dashboard Must Show
+Operational queue: upcoming events, volunteer approvals, membership approvals, pending case updates, appointments, certificates due.
+Blocked / Not Allowed
+No financial exports, PAN export, plan billing, subscription edits, or platform settings.
+Critical Developer Rule
+Can upload reports/media only to assigned cases/events. Public visibility changes require NGO Owner approval if configured.
+Menus / Screens
+Operations Dashboard
+Volunteers
+Events
+Memberships
+Cases
+Appointments
+Tasks
+Certificates
+Attendance
+Operational Reports
+Primary Buttons / Actions
+Approve Volunteer
+Create Event
+Assign Volunteer
+Check-In
+Approve Membership
+Upload Case Update
+Generate Certificate
+Export Attendance
+5. Fundraising Manager
+Item
+Specification
+User Type
+Fundraising command role
+Plan Availability
+Growth onward
+Purpose
+Create fundraising network, assign campaigns to fundraisers/agencies/telecallers, monitor conversion, commission, and source attribution.
+Dashboard Must Show
+Fundraising command center: campaigns, sources, tracking links, fundraiser ranking, agency ranking, lead conversion, pending payout requests.
+Blocked / Not Allowed
+Cannot change compliance records, bank master, subscription plan, GST invoices, or global tenant settings.
+Critical Developer Rule
+Commission rules must be frozen per campaign assignment. Edits after donations require reason and audit log.
+Menus / Screens
+Fundraising Dashboard
+Fundraisers
+Agencies
+Telecaller Groups
+Tracking Links
+Campaign Assignment
+Commission Ledger
+Withdrawal Requests
+Lead CRM
+Reports
+Primary Buttons / Actions
+Create Fundraiser
+Create Agency
+Create Tracking Link
+Assign Campaign
+Auto Distribute Leads
+Approve Payout Request
+Export Performance
+6. Agency Owner
+Item
+Specification
+User Type
+External agency manager role
+Plan Availability
+Growth onward
+Purpose
+Manage agency telecallers, receive assigned campaigns, distribute leads, view team performance, request payouts where allowed.
+Dashboard Must Show
+Agency panel: assigned causes, telecaller list, auto distribution status, leads called, donations raised, conversion rate, commission earned.
+Blocked / Not Allowed
+No access to full NGO donor database, CA reports, PAN exports, other agencies, or bank settings.
+Critical Developer Rule
+Agency sees only donors/leads attributed or assigned to agency. Telecaller data belongs to NGO tenant, not agency permanently.
+Menus / Screens
+Agency Dashboard
+Assigned Campaigns
+Telecallers
+Lead Distribution
+Call Follow-ups
+Commission Ledger
+Withdrawal Request
+Reports
+Primary Buttons / Actions
+Accept Campaign
+Create Telecaller
+Assign Leads
+Auto Distribute
+Reassign Lead
+Request Withdrawal
+Download Own Report
+7. Telecaller
+Item
+Specification
+User Type
+Lead conversion role
+Plan Availability
+Growth onward
+Purpose
+Call assigned leads/donors, update status, create follow-ups, convert leads to donations through assigned trackable links.
+Dashboard Must Show
+My calls today: assigned leads, overdue follow-ups, call outcomes, donations converted, script, campaign notes.
+Blocked / Not Allowed
+No data export, no full donor view, no compliance data, no financial reports, no role/user settings.
+Critical Developer Rule
+Every lead status change logs timestamp, old status, new status, note, user, and campaign attribution.
+Menus / Screens
+My Dashboard
+Assigned Leads
+Follow-ups
+Call Notes
+Assigned Campaigns
+Donation Link
+My Performance
+Primary Buttons / Actions
+Call Now
+Mark Interested
+Mark Not Interested
+Schedule Follow-up
+Send Donation Link
+Add Note
+Mark Converted
+8. Fundraiser
+Item
+Specification
+User Type
+Individual fundraising role
+Plan Availability
+Growth onward
+Purpose
+Raise donations through personal tracking links/QR, view attributed donations and commission/payout ledger if enabled.
+Dashboard Must Show
+My fundraising: assigned campaigns, total raised, donor count, link clicks, conversion, commission earned, payout status.
+Blocked / Not Allowed
+Cannot access full donor database, donor PAN, CA reports, bank account settings, or other fundraisers.
+Critical Developer Rule
+Attribution can be one-time, lifetime, recurring, or campaign-only. Campaign-level rules decide whether future donations generate commission.
+Menus / Screens
+Fundraiser Dashboard
+Assigned Campaigns
+My Links
+QR Codes
+Donations Raised
+Commission Ledger
+Withdrawal Request
+Primary Buttons / Actions
+Copy Link
+Download QR
+Share Campaign
+Request Withdrawal
+View Donors Summary
+Download Statement
+9. Volunteer
+Item
+Specification
+User Type
+Community participation role
+Plan Availability
+Starter onward
+Purpose
+Register for events, track hours, receive assignments, certificates, and volunteer communications.
+Dashboard Must Show
+Volunteer portal: upcoming events, my registrations, attendance, hours contributed, certificates, tasks.
+Blocked / Not Allowed
+No donor data, no donations, no receipts, no compliance, no internal financials.
+Critical Developer Rule
+Event attendance and hours must be approval-based before certificate generation.
+Menus / Screens
+Volunteer Dashboard
+Events
+My Registrations
+Assigned Tasks
+Attendance
+Certificates
+Profile
+Primary Buttons / Actions
+Register Event
+Cancel Registration
+Mark Availability
+Upload Proof
+Download Certificate
+Update Profile
+10. Donor
+Item
+Specification
+User Type
+Public donor role
+Plan Availability
+Starter onward
+Purpose
+Access own donations, receipts, annual statements, 80G/10BE certificates, profile updates, membership, and communication preferences.
+Dashboard Must Show
+Donor portal: donations made, receipts, annual receipt, certificates, supported cases, membership status, profile completion alerts.
+Blocked / Not Allowed
+Cannot access admin records, other donors, fundraiser commissions, CA reports, or internal notes.
+Critical Developer Rule
+Login by email OTP default. SMS OTP is paid add-on. Donor can update only allowed fields via secure token/OTP flow.
+Menus / Screens
+Donor Dashboard
+My Donations
+Receipts
+Annual Statement
+Certificates
+Supported Cases
+Membership
+Profile
+Communication Preferences
+Primary Buttons / Actions
+Download Receipt
+Download Annual PDF
+Submit PAN
+Update Address
+Donate Again
+Renew Membership
+Change Preferences
+11. Membership Manager
+Item
+Specification
+User Type
+Membership ERP role
+Plan Availability
+Starter onward
+Purpose
+Manage free and paid memberships, categories, approvals, renewals, certificates, cards, member showcase, and verification portal.
+Dashboard Must Show
+Membership health: active members, pending approvals, renewals due, paid membership revenue, certificates generated, showcased members.
+Blocked / Not Allowed
+No donation compliance export unless separate permission granted. Cannot edit subscription plan.
+Critical Developer Rule
+Paid membership payment must create receipt/payment record. Certificate verification uses QR and public verification URL.
+Menus / Screens
+Membership Dashboard
+Members
+Categories
+Free Membership
+Paid Membership
+Approvals
+Renewals
+Certificates
+Cards
+Member Showcase
+Reports
+Primary Buttons / Actions
+Create Category
+Approve Member
+Reject Member
+Generate Certificate
+Generate Card
+Showcase Member
+Send Renewal
+Export Register
+12. Website / Content Manager
+Item
+Specification
+User Type
+Website CMS role
+Plan Availability
+Starter onward
+Purpose
+Edit fixed website pages, text, images, blogs, gallery, colors, member showcase, case success/failure stories, and campaign ordering.
+Dashboard Must Show
+CMS status: published pages, drafts, gallery storage, blogs, pending success stories, SEO warnings.
+Blocked / Not Allowed
+Cannot change page layouts or create arbitrary custom designs. Only content, images, colors, CTA text, and allowed sections are editable.
+Critical Developer Rule
+Global color change applies entire website. Page add option uses predefined page types/templates only.
+Menus / Screens
+Website Dashboard
+Pages
+Home
+About Us
+Contact
+CSR
+Gallery
+All Causes
+Volunteer Page
+Thank You Page
+Blogs
+Membership Page
+Global Theme
+Primary Buttons / Actions
+Edit Page
+Add Blog
+Upload Image
+Embed Video URL
+Change Global Colors
+Reorder Campaigns
+Publish
+Preview
+13. Accounts Manager
+Item
+Specification
+User Type
+Finance operations role
+Plan Availability
+Starter onward; advanced Growth/Pro
+Purpose
+Handle donation ledger, manual donations, bank reconciliation, membership revenue, fundraiser payouts, SMS/WhatsApp/add-on bills.
+Dashboard Must Show
+Accounts queue: unreconciled donations, pending payouts, payment failures, receipt holds, add-on credits, membership payments.
+Blocked / Not Allowed
+No plan changes, no role changes, no PAN export unless granted, no website editing.
+Critical Developer Rule
+Financial record delete is soft delete only. Receipt/payment edits after generation require NGO Owner/Supreme Admin approval.
+Menus / Screens
+Accounts Dashboard
+Donation Ledger
+Manual Donations
+Bank Accounts
+Reconciliation
+Payouts
+Membership Payments
+Invoices
+Credit Usage
+Reports
+Primary Buttons / Actions
+Record Donation
+Mark Reconciled
+Approve Payout Payment
+Upload Bank Reference
+Download Ledger
+Raise Dispute
+Export Report
+14. CSR Manager
+Item
+Specification
+User Type
+CSR/grant role
+Plan Availability
+Pro
+Purpose
+Manage CSR contacts, proposals, agreements, project reports, utilization certificates, grant tracking and institutional donor pipeline.
+Dashboard Must Show
+CSR pipeline: prospects, proposals, approved CSR, reports due, utilization certificate due, grant deadlines.
+Blocked / Not Allowed
+No normal donor bulk export unless granted. No subscription/platform controls.
+Critical Developer Rule
+CSR management is Pro-only. Starter/Growth may show CSR public page, but management dashboard remains locked.
+Menus / Screens
+CSR Dashboard
+Corporate Donors
+CSR Proposals
+Agreements
+Project Reports
+Utilization Certificates
+Grant Tracking
+Follow-ups
+CSR Reports
+Primary Buttons / Actions
+Create Proposal
+Upload Agreement
+Generate UC Request
+Mark Follow-up
+Export CSR Pipeline
+Create Grant Deadline
+15. Support Agent / Govindani Staff
+Item
+Specification
+User Type
+Internal support role
+Plan Availability
+Internal only
+Purpose
+Handle tickets, migration requests, bulk import requests, case creation services, website issues, payment support.
+Dashboard Must Show
+Support queue: open tickets, SLA breach, migration orders, import files, assigned NGOs, issue priority.
+Blocked / Not Allowed
+Cannot change plan, issue refunds, impersonate, or access sensitive data unless elevated by Super Admin.
+Critical Developer Rule
+Support access must be time-bound and audit-logged. Sensitive files must be accessed only with ticket reference.
+Menus / Screens
+Support Dashboard
+Tickets
+Migration Requests
+Bulk Upload Requests
+Campaign Creation Orders
+NGO Lookup
+Knowledge Base
+Internal Notes
+Primary Buttons / Actions
+Assign Ticket
+Reply
+Escalate
+Mark Resolved
+Request File
+Start Migration
+Complete Import
+Add Internal Note
+6. Role-Specific Upgrade and Lock Behaviour
+User Type
+Locked Feature Example
+Lock Message / CTA
+Starter NGO Owner
+CA Dashboard
+CA Dashboard is available in Growth. Unlock 10BD, 10BE, reconciliation and compliance calendar.
+Starter NGO Owner
+Fundraising Manager / Agency / Telecaller
+Build a fundraising team and track every rupee by source. Available in Growth.
+Growth NGO Owner
+CSR Management
+Manage CSR proposals, agreements and utilization reports. Available in Pro.
+Growth NGO Owner
+API Access
+Connect custom website/app with NGO OS APIs. Available in Pro.
+Volunteer
+Admin reports
+This area is for NGO admins only.
+Donor
+Admin dashboard
+This area is private to the NGO team.
+Website Manager
+Billing/Plan
+Only NGO Owner can access billing and subscription.
+CA/Auditor
+Campaign editing
+Compliance users cannot edit public campaigns unless permission is granted.
+7. Mandatory Database Fields for Users and Permissions
+Table
+Purpose
+Minimum Fields
+users
+All platform and tenant users
+id, tenant_id, role_id, email, mobile, name, status, last_login_at, created_by
+roles
+Role master
+id, tenant_id/null, role_name, role_scope, is_system_role, status
+permissions
+Action permissions
+id, permission_key, module, description, sensitivity_level
+role_permissions
+Role mapping
+role_id, permission_id, allowed, created_by, updated_at
+user_permissions_override
+Exception control
+user_id, permission_id, allowed, reason, expiry_at
+user_audit_logs
+All user actions
+id, tenant_id, user_id, action, entity, entity_id, old_data, new_data, ip, device, created_at
+impersonation_logs
+Super Admin/support login-as tracking
+id, internal_user_id, tenant_id, target_user_id, reason, started_at, ended_at
+login_sessions
+Security sessions
+id, user_id, tenant_id, token_hash, device, ip, expires_at, revoked_at
+8. API Guard Rules
+All APIs must check tenant_id, role permission and plan/add-on access.
+Write APIs must create audit logs for financial, compliance, membership, user, website, campaign and payout actions.
+Export APIs must validate export permission separately from view permission.
+Impersonation APIs must never bypass audit logging. UI must show impersonation banner.
+Locked-plan APIs return 402/plan_required style response with required_plan and upgrade_url, not generic 403.
+9. QA Checklist for User Type Implementation
+Test Case
+Expected Result
+Login as Starter NGO Owner
+Starter dashboard shows included modules and locked Growth/Pro cards.
+Login as Growth NGO Owner
+Fundraiser/Agency/Telecaller/CA visible; Pro modules locked.
+Login as Pro NGO Owner
+CSR, Grant, API, Multi-branch visible.
+Login as Donor
+Only own receipts/profile/membership shown.
+Login as Volunteer
+Only events, hours, certificates and tasks shown.
+Login as Telecaller
+Only assigned leads and follow-ups shown. Export hidden/blocked.
+Login as Agency
+Can create/manage telecallers but only under own agency scope.
+Login as CA
+Can see compliance dashboards but cannot edit campaigns.
+Login as Website Manager
+Can edit content/colors but cannot change layout or billing.
+Super Admin impersonates NGO
+Impersonation banner and audit log generated.
+User without PAN export clicks export
+Blocked with permission message and audit attempt log.
+10. Final Developer Instruction
+Do not build one universal admin dashboard. Build role-specific dashboards, permission-scoped menus, tenant-scoped data, plan-lock states, and audit-logged actions. If a developer cannot explain what a user type can see, click, export, approve, delete, or request, the implementation is incomplete.

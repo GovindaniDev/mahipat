@@ -1,0 +1,3508 @@
+GOVINDANI NGO OSSUPREME DEVELOPER + CA + SAAS BLUEPRINT
+Final developer handover document for multi-tenant Indian NGO SaaS OS, compliance reports, onboarding, roles, workflows, screen behavior, database and ERP logic
+Field
+Value
+Prepared for
+Govindani Infotech Pvt. Ltd.
+Prepared by
+AI product architect + SaaS/NGO workflow analyst
+Version
+v2.0 Supreme Expansion
+Date
+2026-06-17
+Status
+Developer implementation blueprint - not legal opinion
+Primary build rule
+Developers must build from this document without founder dependency. Any ambiguity must be logged before coding.
+This document is intentionally strict. The goal is not to create a beautiful demo only. The goal is to create a real SaaS operating system for Indian NGOs where donations, compliance, donor data, roles, billing, website, fundraisers, agencies, volunteers and CA reporting all connect through one controlled data model.
+CA and compliance disclaimer: Government forms, tax rates, statutory due dates and portal formats can change. The product must store template mappings and configurable compliance rules. No in-app text should claim legal finality unless verified by a practising CA and the current government utility.
+[Heading1] 0. Master Table of Contents
+[ListNumber] Product definition and non-negotiable build rules
+[ListNumber] Current prototype gaps and corrected architecture
+[ListNumber] Complete SaaS user hierarchy and demo users
+[ListNumber] Indian NGO onboarding registration form
+[ListNumber] Plan selection, subscription, trial, add-ons and billing
+[ListNumber] Website CMS, custom domain, WordPress plugin and API modes
+[ListNumber] Donation onboarding form and donation readiness engine
+[ListNumber] Donor CRM, donor dashboard and compliance data recovery
+[ListNumber] CA department and statutory compliance command center
+[ListNumber] Supreme report library with export columns
+[ListNumber] Fundraiser, agency, telecaller and commission/TDS ERP
+[ListNumber] Volunteer, events, attendance, certificate and task ERP
+[ListNumber] Campaign/case/cause creation and marketplace services
+[ListNumber] Ticketing, support, bulk import and migration desk
+[ListNumber] Security, audit, data retention, soft delete and purge rules
+[ListNumber] Database schema and entities
+[ListNumber] API and service contract map
+[ListNumber] Frontend screen registry and exact button behavior
+[ListNumber] ERP diagrams and data flow maps
+[ListNumber] QA checklist, edge cases and developer mistakes to avoid
+[ListNumber] Open decisions for founder and CA
+[Heading1] 1. Product Definition and Non-Negotiable Build Rules
+Govindani NGO OS is India-first and must support NGOs, Trusts, Temples, Gaushalas, Schools, Foundations, religious organizations and donation-driven bodies. Later internationalization must be architecturally possible, but v1 must deeply support Indian workflows: PAN, 80G, 12A/12AB, 10BD, 10BE, FCRA toggle, CSR, donor receipts, CA exports, GST invoices for SaaS billing, Razorpay/Cashfree subscription billing, custom domains and role-based access.
+Rule
+Developer meaning
+Failure if ignored
+Multi-tenant first
+Every table carrying NGO business data must include tenant_id.
+One NGO can see another NGO data; fatal breach.
+Role + permission driven
+Role name is not enough. Every action must check permission key and tenant scope.
+CA/telecaller/fundraiser gets wrong access.
+Donor is the core entity
+Donation, receipt, 10BD, 10BE, WhatsApp, email, fundraising attribution attach to donor.
+Reports break and compliance becomes manual Excel.
+Compliance snapshots
+Receipt/10BD/10BE exports freeze data at time of generation. Later profile edits do not silently rewrite past PDFs.
+Audit failure and CA cannot trust records.
+Plan gating is visual + backend
+Locked modules can be visible as blurred cards, but API must still deny access.
+A user can bypass lock from browser.
+No hard delete for financial/compliance records
+Use soft delete, void, reverse, restore and audit. Permanent delete allowed only for failed onboarding/test tenants by Super Admin.
+Financial history disappears.
+Configurable laws/templates
+10BD/10BE/GST/TDS templates are versioned settings.
+Government utility changes will break product.
+Prototype must simulate real product
+Demo screens must have real roles, realistic data and state transitions.
+Developers build a pretty but useless mockup.
+[Heading1] 2. Current Prototype Gaps and Corrected Direction
+[ListBullet] Current HTML is visually usable but still behaves like a single-user static admin panel.
+[ListBullet] Existing fake login must be replaced by role-based demo login accounts and route-specific dashboards.
+[ListBullet] Plan selection, locked modules, subscription state, add-ons, and usage limits must be visible in the prototype.
+[ListBullet] The fundraiser/agency/telecaller hierarchy is not optional; it is a core differentiator and must be treated as ERP.
+[ListBullet] The CA department must not be a simple reports page. It must be a statutory command center with validation queues, filing packs and downloadable registers.
+[ListBullet] Every button in compliance, billing, donation and payout modules must create an audit log event.
+[Heading1] 3. Complete SaaS User Hierarchy and Demo Accounts
+Layer
+Role
+Primary purpose
+Default plan availability
+Govindani SaaS
+Super Admin
+Create/manage NGOs, plans, subscriptions, coupons, add-ons, billing, support, impersonation, global compliance templates.
+Internal only
+NGO Owner
+NGO Owner / Supreme Admin
+Owns tenant, users, website, bank, compliance, donation settings, plan, billing.
+All paid plans
+Compliance
+CA / Auditor
+View/export CA reports, 10BD/10BE, 80G, reconciliation, audit. Permission configurable.
+Growth onward
+Operations
+Operations Manager
+Events, volunteers, staff, appointments, beneficiaries, memberships, internal operations.
+Growth/Pro recommended
+Fundraising
+Fundraising Manager
+Creates fundraiser groups, agencies, links, commission rules, campaign assignment.
+Growth onward
+Fundraising
+Agency Owner
+Receives assigned causes, distributes leads/campaigns to own telecallers, views agency performance.
+Growth onward
+Fundraising
+Telecaller
+Calls assigned leads/donors, records notes, follow-ups, conversion.
+Growth onward
+Fundraising
+Fundraiser
+Gets links/QR, raises donations, sees own performance and withdrawal requests.
+Growth onward
+Public relationship
+Donor
+OTP login, receipts, annual statements, 10BE, profile updates, communication preferences.
+All plans
+Volunteer
+Volunteer
+Register for events, tasks, attendance, hours, certificates.
+All plans
+Corporate
+CSR Manager
+CSR proposals, MOUs, utilization certificates, reports.
+Pro
+Generic
+Custom Manager / Staff User
+Custom permission bundle. Used for accountant, content editor, receptionist, data entry.
+All plans with seat limits
+Role
+Email
+Password
+Landing page
+Super Admin
+super@govindani.ngoos.in
+Super@123
+/saas/dashboard
+NGO Owner
+owner@hopetrust.org
+Owner@123
+/admin/dashboard
+CA / Auditor
+ca@hopetrust.org
+CA@123
+/ca/dashboard
+Donor
+donor@example.com
+Donor@123 or email OTP
+/donor/dashboard
+Volunteer
+volunteer@hopetrust.org
+Volunteer@123
+/volunteer/events
+Custom Manager
+manager@hopetrust.org
+Manager@123
+/admin/operations
+Fundraiser
+fundraiser@hopetrust.org
+Fund@123
+/fundraiser/dashboard
+Telecaller
+telecaller@agencyone.in
+Call@123
+/telecaller/leads
+Agency Owner
+agency@agencyone.in
+Agency@123
+/agency/dashboard
+[Heading1] 4. Permission Keys
+Permission key
+Meaning
+TENANT_CREATE
+Create NGO tenant
+TENANT_SUSPEND
+Suspend/restore NGO
+TENANT_IMPERSONATE
+Login as tenant admin
+SUBSCRIPTION_MANAGE
+Manage plans, invoices, add-ons
+USER_MANAGE
+Create/edit/disable users
+ROLE_MANAGE
+Create roles and permission sets
+DONOR_VIEW
+View donor list/profile
+DONOR_EDIT
+Edit donor fields
+DONOR_IMPORT
+Import donor Excel
+DONOR_PAN_VIEW
+View unmasked PAN in permitted places
+DONOR_PAN_EXPORT
+Export PAN/compliance data
+DONATION_RECORD
+Create donation
+DONATION_EDIT_AFTER_RECEIPT
+Edit receipt-linked donation
+DONATION_VOID
+Void/reverse donation
+RECEIPT_GENERATE
+Generate receipt
+RECEIPT_BULK_RELEASE
+Pay/release held receipts
+COMPLIANCE_10BD_VALIDATE
+Run 10BD validation
+COMPLIANCE_10BD_EXPORT
+Export 10BD pack
+COMPLIANCE_10BE_IMPORT
+Import 10BE ZIP/mapping
+COMPLIANCE_10BE_MATCH
+Manual match 10BE
+COMPLIANCE_CERT_SEND
+Send/resend certificates
+FUNDRAISER_MANAGE
+Create fundraisers and groups
+AGENCY_MANAGE
+Create/manage agencies
+TELECALLER_ASSIGN
+Assign leads and campaigns
+PAYOUT_MARK_PAID
+Mark fundraiser/agency payout paid
+VOLUNTEER_MANAGE
+Approve volunteers/events
+EVENT_MANAGE
+Create/edit events
+WEBSITE_MANAGE
+Edit website/content/domain
+REPORT_EXPORT
+Export normal reports
+CA_EXPORT
+Export CA packs
+AUDIT_VIEW
+View audit logs
+FCRA_MANAGE
+FCRA module
+CSR_MANAGE
+CSR module
+API_KEYS_MANAGE
+Generate API keys
+[Heading1] 5. Indian NGO Onboarding Registration Form
+Registration must save even if the NGO does not select a plan. This is a lead and compliance-intake asset. The system must create onboarding_status = REGISTERED_PENDING_PLAN and notify Super Admin sales/support.
+Step
+Screen title
+Fields
+System result
+Step 1
+Account owner identity
+Owner name, mobile, email, password/OTP, designation, consent.
+Create lead user and tenant shell.
+Step 2
+Organization basics
+NGO/legal name, public display name, organization type, working sector, operating states/districts.
+Store tenant_profile and segmentation.
+Step 3
+Legal/compliance
+PAN, registration number, act type, 12A/12AB, 80G, CSR-1, NGO Darpan ID, FCRA status.
+Create compliance profile.
+Step 4
+Address/contact
+Registered address, city, state, pincode, official email, phone, website.
+Use for invoice, website and reports.
+Step 5
+Documents
+Registration certificate, PAN, 12A, 80G, bank proof, logo, trust deed, CSR-1, FCRA if enabled.
+Secure storage with verification status.
+Step 6
+Plan selection
+Starter/Growth/Pro/trial with billing duration and coupon.
+Create subscription draft.
+Step 7
+Payment mandate
+Razorpay/Cashfree subscription or payment link.
+Activate plan after success.
+Step 8
+Go-live checklist
+Domain, bank/Razorpay, receipt prefix, campaigns, website content, users.
+Move to ACTIVE_READY.
+Field key
+Type
+Required
+Validation
+Where used
+owner_full_name
+Text
+Yes
+Min 2 chars
+Tenant owner display and login
+owner_mobile
+Phone
+Yes
+10-digit India
+OTP and renewal reminders
+owner_email
+Email
+Yes
+Unique across owner users
+Login, invoices, alerts
+owner_designation
+Dropdown
+Yes
+Founder/Trustee/President/Secretary/Manager/Other
+Governance context
+org_legal_name
+Text
+Yes
+As per registration/PAN
+Invoice and compliance
+org_public_name
+Text
+Yes
+Can differ from legal name
+Website display
+org_type
+Dropdown
+Yes
+Trust/Society/Section 8/Temple/Gaushala/School/Foundation/Other
+Form behavior
+sector_tags
+Multi-select
+Yes
+Education/Health/Religious/Animal Welfare/Food/CSR etc.
+Segmentation
+registration_number
+Text
+Conditional
+Required if registered
+Legal record
+registration_act
+Text/Dropdown
+Conditional
+State trust act/Societies Act/Companies Act/Other
+Legal record
+registration_date
+Date
+Optional
+Past date
+Compliance profile
+pan
+Text
+Recommended
+AAAAA9999A uppercase
+80G/CA checks
+ngo_darpan_id
+Text
+Optional
+As available
+Govt profile mapping
+section_12a_12ab_status
+Dropdown
+Yes
+Available/Applied/Not Available/Not Sure
+Compliance alert
+section_80g_status
+Dropdown
+Yes
+Available/Applied/Not Available/Not Sure
+Receipt/10BD readiness
+csr1_status
+Dropdown
+Optional
+Available/Not Available/Applied
+CSR readiness
+fcra_status
+Dropdown
+Yes
+No/Yes/Prior Permission/Applied
+FCRA menu toggle
+registered_address
+Textarea
+Yes
+Min 10 chars
+Invoice and compliance
+state
+Dropdown
+Yes
+Indian state
+GST place and reports
+pincode
+Text
+Yes
+6 digits
+Address validation
+official_email
+Email
+Recommended
+Valid email
+Public website/contact
+official_phone
+Phone
+Recommended
+10 digit
+Public website/contact
+existing_website
+URL
+Optional
+URL
+Migration and domain
+logo
+File
+Optional
+PNG/JPG max configurable
+Branding
+[Heading1] 6. Plan Selection and SaaS Billing
+Plan
+Price
+Best for
+Core entitlement
+Starter
+₹2,500/month + GST
+Small NGOs, temples, gaushalas, trusts
+Website template, donation page, QR, Razorpay, receipts up to 1,000/month, donor dashboard, donor CRM up to visible limit, volunteers, max 5 active cases, basic reports
+Growth
+₹4,500/month + GST
+Growing fundraising NGOs
+Starter + CA login, fundraiser, telecaller, agency, WhatsApp available, volunteers, beneficiaries, event management, 5,000 receipts/month, advanced reports
+Pro
+₹8,000/month + GST
+Large NGOs/foundations/multi-branch
+Growth + API keys, CSR management, grant tracking, multi-branch, team permissions, donor retention analytics, 15,000 receipts/month, priority support
+Plan cards must have eye/info buttons beside every meaningful feature. Clicking the eye opens a side drawer: feature explanation, included/not included, limit, overage price, upgrade CTA, and sample screenshot if available.
+UI element
+Text
+Behavior
+Data stored
+Plan card CTA
+Start 7-Day Trial
+Only on Starter. Creates trial with 100 visits and no payment.
+subscription_status=TRIAL
+Plan card CTA
+Choose Starter/Growth/Pro
+Opens billing duration and coupon step.
+selected_plan_id
+Eye icon
+View details
+Opens feature drawer with limits and examples.
+feature_key analytics
+Locked module button
+Upgrade to See
+Opens upgrade modal and plan comparison.
+upgrade_interest event
+Billing duration toggle
+3 months / 6 months / 12 months
+Applies 5% discount for 6 months, 15% for 12 months.
+billing_cycle_months
+Coupon field
+Apply Coupon
+Validates against Super Admin coupon engine.
+coupon_id and discount snapshot
+Payment button
+Pay & Activate
+Creates Razorpay/Cashfree order/subscription.
+payment_attempt
+[Heading1] 7. Billing, Invoice, Add-On and Overage Rules
+Billing item
+Rule
+Minimum paid subscription
+3 months.
+Trial
+7 days Starter only; 100 visits; locked feature previews.
+GST invoice
+Generate for every subscription, add-on, overage and service payment.
+Payment gateways
+Razorpay and Cashfree supported. Provider config is Govindani-side for SaaS billing; NGO connects own Razorpay for donations.
+Receipt overage
+Excess receipts enter HELD state. One overage payment releases generation/sending/download for those receipts; no double charge.
+Buffer
+Allow 50% additional hidden/held receipt buffer, then block receipt generation.
+Payment failure
+Show due reminders from 7 days before. After grace period, auto-suspend tenant.
+WhatsApp add-on
+₹1,000/month base, prorated to align with main billing cycle; message credits tracked separately.
+Branded WhatsApp setup
+₹2,000 one-time setup. Meta Direct integration.
+SMS
+Usage charged; suggested ₹0.40/SMS. Final provider/margin pending.
+Donor SMS OTP login
+₹499/month add-on plus SMS usage.
+Downgrade
+Request only. Super Admin review required. No instant downgrade because data/usage may exceed lower plan.
+[Heading1] 8. Website CMS, Domain, WordPress Plugin and Pro API
+Mode
+Available
+Purpose
+Developer rules
+Hosted fixed-template website
+All plans
+NGO website live from OS
+Fixed sections; editable text, images, colors, logo, campaign ordering, donate button.
+WordPress plugin
+All paid plans as connector
+Existing WordPress websites can display OS campaigns
+Shortcodes: [ngoos_campaigns], [ngoos_donate id=""], [ngoos_receipt_lookup], [ngoos_case_grid].
+Pro API
+Pro only
+Custom coded websites/apps
+API key per tenant, scoped permissions, rate limits, audit logs.
+Website page/setting
+Editable fields
+Rules
+Header
+Logo, menu labels, donate button text, donate target campaign
+Donate button always visible.
+Home
+Hero title, subtitle, images, featured campaigns order, impact counters
+Campaign drag/drop required.
+About
+Text sections, mission, vision, founder/trustee blocks
+Fixed layout, editable content.
+Campaigns/Causes
+Campaign cards from campaign module
+Can reorder and pin.
+CSR
+CSR intro, proposal CTA, documents
+Page visible in Starter; management Pro.
+Gallery
+Images and video URLs
+Image max 1 MB; video via YouTube/Instagram URL only.
+Contact
+Address, map, phone, email, enquiry form
+Form creates lead/support enquiry.
+SEO
+Meta title, description, OG image
+Plan-wise if needed.
+[Heading1] 9. Donation Onboarding Form
+The donation onboarding form is the public-facing pre-donation KYC/intake form. It is not the full donation management system. It must collect exactly enough data to complete donation, receipt, PAN/address recovery and compliance readiness without creating donor friction.
+Field
+Type
+Required
+Condition
+Validation/behavior
+donation_amount
+Amount
+Yes
+Always
+Preset chips + custom amount; > 0.
+campaign_id
+Hidden/select
+Yes
+Always
+From donate button/QR/campaign page.
+donor_name
+Text
+Yes
+Always
+Min 2 chars.
+mobile
+Phone
+Yes
+Always
+10 digit; duplicate donor match.
+email
+Email
+Recommended
+Receipt email if available
+Validate email.
+pan
+Text
+Conditional
+Strongly ask for 80G; can skip if NGO setting allows
+Uppercase format; mask after entry.
+address_line_1
+Text
+Conditional
+Required if compliance setting strict
+Used for 10BD readiness.
+city
+Text
+Conditional
+If address needed
+Normalize.
+state
+Dropdown
+Conditional
+If address needed
+Indian states.
+pincode
+Text
+Optional/conditional
+If address needed
+6 digit.
+communication_consent
+Checkbox group
+Yes
+Email/WhatsApp/SMS consent
+Store consent snapshot.
+payment_method
+Gateway/UPI QR
+Yes
+Always
+Razorpay/Cashfree/UPI path.
+receipt_delivery
+Checkbox
+Optional
+Email/WhatsApp/SMS
+Respect consent and paid add-ons.
+referral_tracking_id
+Hidden
+Optional
+Fundraiser/agency/telecaller link
+Attribution.
+anonymous_public_display
+Checkbox
+Optional
+Website display only
+Internal identity still stored.
+[Heading1] 10. Donor CRM and Dashboard
+Donor dashboard section
+Fields/actions
+Profile completion
+PAN, address, email, mobile, consent completeness with red alerts.
+Donation history
+Donation date, campaign, amount, mode, receipt number, receipt download.
+80G receipts
+Receipt list, download/email/WhatsApp if available.
+10BE certificates
+Certificate status, download when matched and approved.
+Annual receipt
+FY-wise annual statement generation/download.
+Profile update
+Email OTP login; SMS OTP add-on if NGO enabled.
+Communication preferences
+Opt-in/out per channel and purpose.
+Event/volunteer cross-over
+If donor also volunteer, show event participation if linked.
+[Heading1] 11. CA Department: Supreme Compliance Command Center
+The CA Department must reduce the number of CAs required by standardizing validations, reports, filing packs, and exception queues. It does not replace CA judgment; it removes clerical chaos.
+CA area
+Purpose
+Core screens
+Compliance dashboard
+Overall health of tenant compliance
+Missing PAN, missing address, 80G receipts, 10BD readiness, 10BE pending, FCRA alerts.
+80G receipt center
+Receipt generation, correction request, immutable snapshots
+Receipt list, bulk download, send logs, cancelled/voided receipts.
+10BD preparation
+Validate donor/year data before filing
+FY selector, validation results, missing data queue, export pack.
+10BE import/matching
+Import certificate ZIP/mapping and dispatch
+Upload ZIP, process, match score, manual review, dispatch queue.
+Donation register
+CA-ready donation ledger
+Filters, export, donor and bank mapping.
+Bank reconciliation
+Donation vs receiving account checks
+Unreconciled, reconciled, disputed, reversed.
+FCRA center
+Feature-controlled foreign contribution reports
+FC account, foreign donors, purpose-wise receipt/utilization.
+CSR center
+CSR proposals/utilization if enabled
+CSR donor, agreement, project report, utilization certificate.
+TDS/payout register
+Fundraiser/agency commission payout checks
+Payout, TDS flag, PAN, payment proof, certificate/email log.
+Audit center
+Read-only action logs
+Exports, edits, sends, imports, matches, billing actions.
+[Heading1] 12. CA Compliance References to Implement as Configurable Rules
+Topic
+System requirement
+Source category
+10BD
+Statement of donations for 80G/35 recipients; filed electronically; if no donation received, form not needed as per portal FAQ.
+Income Tax portal 10BD/10BE FAQ/user manual
+10BE
+Certificate to donor generated after filing/processing; system imports/matches and dispatches.
+Income Tax portal 10BD/10BE manual
+GST SaaS invoice
+Invoice must include supplier GSTIN/name/address, serial number, date, recipient details when required, HSN/SAC/description, taxable value, tax rate/amount, place of supply, signature/QR where applicable.
+CBIC Rule 46
+FCRA FC-4
+If FCRA enabled, annual return and foreign contribution receipt/utilization data must be structured.
+MHA FCRA portal FC-4
+NGO Darpan
+Store Darpan ID, registration, address, FCRA availability, key issues/operational areas where applicable.
+NGO Darpan public fields
+CSR-1
+Store CSR registration status and documents for organizations seeking CSR funding.
+MCA/CSR ecosystem
+TDS on commission
+Fundraiser/agency payouts may require TDS depending on law, payee status, threshold, PAN and current section/rate. Product must be configurable and show CA review required.
+Income Tax/TDS rules, CA verification required
+[Heading1] 13. Supreme Report Library and Column Registry
+[Heading2] Donor Master Strategy Report
+Column
+Format
+Rule
+tenant_id
+Text
+Exportable
+donor_code
+Text
+Exportable
+donor_type
+Text
+Exportable
+legal_name
+Text
+Exportable
+public_name
+Text
+Exportable
+mobile_masked
+Text
+Exportable
+email
+Text
+Exportable
+pan_masked
+Text
+Masked/export permission required
+city
+Text
+Exportable
+state
+Text
+Exportable
+country
+Text
+Exportable
+first_donation_date
+Date/Datetime
+Exportable
+last_donation_date
+Date/Datetime
+Exportable
+lifetime_amount
+Currency/Number
+Exportable
+fy_amount
+Currency/Number
+Exportable
+donation_count
+Text
+Exportable
+average_donation
+Text
+Exportable
+recency_days
+Text
+Exportable
+frequency_score
+Text
+Exportable
+value_score
+Currency/Number
+Exportable
+profile_completion_pct
+Text
+Exportable
+pan_status
+Enum/Boolean
+Masked/export permission required
+address_status
+Enum/Boolean
+Exportable
+preferred_channel
+Text
+Exportable
+consent_email
+Text
+Exportable
+consent_whatsapp
+Text
+Exportable
+consent_sms
+Text
+Exportable
+source_first
+Text
+Exportable
+source_latest
+Text
+Exportable
+fundraiser_id
+Text
+Exportable
+agency_id
+Text
+Exportable
+telecaller_id
+Text
+Exportable
+segment
+Text
+Exportable
+recommended_action
+Text
+Exportable
+[Heading2] Donation Register CA Report
+Column
+Format
+Rule
+tenant_id
+Text
+Exportable
+donation_id
+Text
+Exportable
+receipt_number
+Text
+Exportable
+receipt_date
+Date/Datetime
+Exportable
+donation_date
+Date/Datetime
+Exportable
+financial_year
+Text
+Exportable
+donor_code
+Text
+Exportable
+donor_name
+Text
+Exportable
+donor_type
+Text
+Exportable
+pan_masked
+Text
+Masked/export permission required
+amount
+Currency/Number
+Exportable
+eligible_amount
+Enum/Boolean
+Exportable
+campaign_id
+Text
+Exportable
+campaign_name
+Text
+Exportable
+payment_mode
+Text
+Exportable
+gateway
+Text
+Exportable
+transaction_reference
+Text
+Exportable
+bank_account_received_in
+Text
+Exportable
+reconciliation_status
+Enum/Boolean
+Exportable
+80g_eligible
+Enum/Boolean
+Exportable
+receipt_status
+Enum/Boolean
+Exportable
+source_type
+Text
+Exportable
+fundraiser_id
+Text
+Exportable
+agency_id
+Text
+Exportable
+telecaller_id
+Text
+Exportable
+created_by
+Text
+Exportable
+approved_by
+Text
+Exportable
+audit_ref
+Text
+Exportable
+[Heading2] 10BD Preparation Report
+Column
+Format
+Rule
+sr_no
+Text
+Exportable
+batch_id
+Text
+Exportable
+financial_year
+Text
+Exportable
+assessment_year
+Text
+Exportable
+tenant_ngo_code
+Text
+Exportable
+donor_code
+Text
+Exportable
+donor_type
+Text
+Exportable
+id_proof_type
+Text
+Exportable
+pan_masked
+Text
+Masked/export permission required
+aadhaar_last_4
+Text
+Exportable
+passport_no
+Text
+Exportable
+tin_foreign_tax_id
+Text
+Exportable
+name_of_donor
+Text
+Exportable
+contact_person
+Text
+Exportable
+email
+Text
+Exportable
+mobile
+Text
+Exportable
+address_line_1
+Text
+Exportable
+address_line_2
+Text
+Exportable
+city
+Text
+Exportable
+state
+Text
+Exportable
+country
+Text
+Exportable
+pin_code
+Text
+Exportable
+donation_category
+Text
+Exportable
+donation_mode
+Text
+Exportable
+donation_amount
+Currency/Number
+Exportable
+receipt_number
+Text
+Exportable
+receipt_date
+Date/Datetime
+Exportable
+transaction_reference
+Text
+Exportable
+bank_account_received_in
+Text
+Exportable
+fcra_status
+Enum/Boolean
+Exportable
+fundraiser_source
+Text
+Exportable
+validation_status
+Enum/Boolean
+Exportable
+inclusion_status
+Enum/Boolean
+Exportable
+remarks
+Text
+Exportable
+[Heading2] 10BE Import Match Report
+Column
+Format
+Rule
+import_batch_id
+Text
+Exportable
+financial_year
+Text
+Exportable
+certificate_number
+Text
+Exportable
+acknowledgement_number
+Text
+Exportable
+pan_masked
+Text
+Masked/export permission required
+donor_name_on_certificate
+Text
+Exportable
+matched_donor_code
+Text
+Exportable
+match_score
+Text
+Exportable
+match_reason
+Text
+Exportable
+covered_amount
+Currency/Number
+Exportable
+certificate_file_name
+Text
+Exportable
+manual_review_required
+Text
+Exportable
+approved_by
+Text
+Exportable
+dispatch_status
+Enum/Boolean
+Exportable
+email_status
+Enum/Boolean
+Exportable
+whatsapp_status
+Enum/Boolean
+Exportable
+download_count
+Text
+Exportable
+audit_ref
+Text
+Exportable
+[Heading2] PAN/Address Recovery Report
+Column
+Format
+Rule
+donor_code
+Text
+Exportable
+donor_name
+Text
+Exportable
+mobile_masked
+Text
+Exportable
+email
+Text
+Exportable
+missing_pan
+Text
+Masked/export permission required
+invalid_pan
+Text
+Masked/export permission required
+missing_address
+Text
+Exportable
+last_request_channel
+Text
+Exportable
+last_request_at
+Date/Datetime
+Exportable
+attempt_count
+Text
+Exportable
+token_status
+Enum/Boolean
+Exportable
+token_expiry
+Date/Datetime
+Exportable
+submitted_at
+Date/Datetime
+Exportable
+updated_by
+Date/Datetime
+Exportable
+ready_for_10bd
+Text
+Exportable
+[Heading2] Fundraiser Commission Ledger
+Column
+Format
+Rule
+ledger_id
+Text
+Exportable
+fundraiser_type
+Text
+Exportable
+fundraiser_id
+Text
+Exportable
+fundraiser_name
+Text
+Exportable
+campaign_id
+Text
+Exportable
+campaign_name
+Text
+Exportable
+commission_rule_id
+Currency/Number
+Exportable
+attribution_scope
+Text
+Exportable
+recurring_included
+Enum/Boolean
+Exportable
+lifetime_donor_included
+Enum/Boolean
+Exportable
+total_raised
+Text
+Exportable
+eligible_amount
+Enum/Boolean
+Exportable
+commission_percent
+Currency/Number
+Exportable
+gross_commission
+Currency/Number
+Exportable
+tds_applicable
+Enum/Boolean
+Exportable
+tds_section
+Currency/Number
+Exportable
+tds_rate
+Currency/Number
+Exportable
+tds_amount
+Currency/Number
+Exportable
+net_payable
+Currency/Number
+Exportable
+paid_amount
+Currency/Number
+Exportable
+pending_amount
+Currency/Number
+Exportable
+payment_status
+Enum/Boolean
+Exportable
+payment_mode
+Text
+Exportable
+payment_reference
+Text
+Exportable
+proof_file
+Text
+Exportable
+next_reminder_date
+Date/Datetime
+Exportable
+admin_remarks
+Text
+Exportable
+[Heading2] Agency Telecaller Performance
+Column
+Format
+Rule
+agency_id
+Text
+Exportable
+agency_name
+Text
+Exportable
+telecaller_group_id
+Text
+Exportable
+telecaller_id
+Text
+Exportable
+assigned_campaigns
+Text
+Exportable
+assigned_leads
+Text
+Exportable
+calls_made
+Text
+Exportable
+connected_calls
+Text
+Exportable
+followups_due
+Text
+Exportable
+donations_converted
+Text
+Exportable
+amount_raised
+Currency/Number
+Exportable
+conversion_rate
+Text
+Exportable
+avg_donation
+Text
+Exportable
+commission_earned
+Currency/Number
+Exportable
+withdrawal_requested
+Text
+Exportable
+payout_status
+Enum/Boolean
+Exportable
+[Heading2] Volunteer Event Report
+Column
+Format
+Rule
+volunteer_id
+Text
+Exportable
+volunteer_name
+Text
+Exportable
+mobile_masked
+Text
+Exportable
+email
+Text
+Exportable
+skills
+Text
+Exportable
+event_id
+Text
+Exportable
+event_name
+Text
+Exportable
+event_date
+Date/Datetime
+Exportable
+registration_status
+Enum/Boolean
+Exportable
+attendance_status
+Enum/Boolean
+Exportable
+checkin_time
+Text
+Exportable
+checkout_time
+Text
+Exportable
+hours_served
+Text
+Exportable
+certificate_status
+Enum/Boolean
+Exportable
+task_assigned
+Text
+Exportable
+task_completed
+Text
+Exportable
+coordinator_remarks
+Text
+Exportable
+[Heading2] GST SaaS Invoice Register
+Column
+Format
+Rule
+invoice_id
+Text
+Exportable
+invoice_number
+Text
+Exportable
+invoice_date
+Date/Datetime
+Exportable
+tenant_id
+Text
+Exportable
+ngo_legal_name
+Text
+Exportable
+billing_state
+Text
+Exportable
+gstin_if_available
+Text
+Exportable
+plan_name
+Text
+Exportable
+billing_period
+Text
+Exportable
+taxable_value
+Currency/Number
+Exportable
+discount
+Text
+Exportable
+cgst
+Text
+Exportable
+sgst
+Text
+Exportable
+igst
+Text
+Exportable
+total_invoice_value
+Currency/Number
+Exportable
+payment_gateway
+Text
+Exportable
+payment_id
+Text
+Exportable
+invoice_status
+Enum/Boolean
+Exportable
+pdf_url
+Text
+Exportable
+[Heading2] Support Ticket SLA Report
+Column
+Format
+Rule
+ticket_id
+Text
+Exportable
+tenant_id
+Text
+Exportable
+raised_by
+Text
+Exportable
+module
+Text
+Exportable
+category
+Text
+Exportable
+priority
+Text
+Exportable
+subject
+Text
+Exportable
+status
+Enum/Boolean
+Exportable
+assigned_to
+Text
+Exportable
+created_at
+Date/Datetime
+Exportable
+first_response_at
+Date/Datetime
+Exportable
+resolved_at
+Date/Datetime
+Exportable
+sla_due_at
+Date/Datetime
+Exportable
+sla_breached
+Text
+Exportable
+resolution_summary
+Text
+Exportable
+[Heading1] 14. Fundraiser, Agency, Telecaller and Commission ERP
+This module is not a simple referral link feature. It is an attribution, performance, payout, CA-review and agency-management system.
+Entity
+Meaning
+Can do
+Cannot do
+Fundraising Manager
+NGO internal manager
+Create campaigns assignment, commission rules, groups, agencies, fundraisers, performance reports.
+Cannot edit compliance exports unless permission.
+Agency Owner
+External/internal agency manager
+View assigned campaigns, distribute to telecallers, see agency performance, request payout.
+Cannot see full donor database outside assigned/attributed leads.
+Telecaller
+Caller under NGO or agency
+See assigned leads/campaigns, call, add notes, set follow-up, conversion tracking.
+No export, no PAN full view, no financial reports.
+Fundraiser
+Individual fundraiser
+Gets links/QR, raises donations, sees own donor-attributed summary, withdrawal request.
+No donor exports or other fundraiser data.
+[Heading1] 14.1 Fundraiser Campaign Assignment Flow
+[ListNumber] NGO Admin creates campaign/cause/case.
+[ListNumber] Admin toggles Enable Fundraising = Yes.
+[ListNumber] Admin selects assignment targets: individual fundraisers, agency owners, telecaller groups, fundraiser groups, or all active fundraisers.
+[ListNumber] Admin selects commission rule: per-donation, lifetime donor, first donation only, recurring included yes/no, attribution validity days, exclude refunded donations.
+[ListNumber] System generates tracking links and QR codes per target. No duplicate campaign is created.
+[ListNumber] Target users receive in-app notification, email and WhatsApp if enabled.
+[ListNumber] Agency Owner sees new campaign and distributes to telecallers manually or auto-distribute.
+[ListNumber] Telecaller/fundraiser uses link/QR. Donation stores tracking_id, fundraiser_id, agency_id, telecaller_id, campaign_id and attribution snapshot.
+[ListNumber] Dashboard updates raised amount, eligible commission, pending payout and validation issues.
+[ListNumber] Fundraiser/agency can raise withdrawal request. Admin reviews, marks paid/not paid/remind later. No automatic money transfer in v1.
+Commission rule field
+Type
+Default
+Explanation
+commission_rule_name
+Text
+Campaign default
+Readable rule name.
+commission_percent
+Number
+0
+Gross percentage before TDS.
+commission_basis
+Enum
+Successful donation only
+Successful donation / 80G eligible only / reconciled only.
+attribution_scope
+Enum
+First donation only
+First donation only / lifetime donor / fixed validity window.
+attribution_validity_days
+Number
+90
+If window-based.
+include_recurring
+Boolean
+No
+Whether future recurring donations count.
+include_repeat_donations
+Boolean
+No
+Whether repeat donation after months counts.
+exclude_refunds
+Boolean
+Yes
+Refunded/voided donations reduce eligible amount.
+tds_applicable
+Boolean
+CA review
+If enabled, calculate withholding.
+tds_rate
+Number
+Configurable
+Do not hardcode. Show CA verification warning.
+minimum_payout_amount
+Currency
+0
+Optional threshold.
+approval_required
+Boolean
+Yes
+Payout request must be approved.
+payment_modes_allowed
+Enum multi
+Bank/UPI/Cash
+For marking paid.
+invoice_or_bill_required
+Boolean
+Optional
+Ask fundraiser/agency to upload invoice/bill if required.
+reminder_days
+Number
+10/15/custom
+If admin selects remind later.
+Payout status
+Meaning
+Allowed next actions
+EARNED
+Commission calculated but not requested
+Request withdrawal / Hold by admin
+REQUESTED
+Fundraiser/agency requested payout
+Approve / Reject / Ask documents
+APPROVED
+Admin approved payout
+Mark paid / Remind later
+PAID
+Admin marked paid with details
+Send email receipt, lock payment record
+NOT_PAYABLE
+Admin marked not payable with reason
+Notify user, keep audit
+ON_HOLD
+Admin postponed
+Set reminder date
+ADJUSTED
+Refund/reversal adjusted
+Show adjustment details
+[Heading1] 14.2 Agency Distribution Logic
+Distribution mode
+Behavior
+Manual
+Agency owner selects telecallers one by one and assigns campaign/leads.
+Equal auto-distribute
+System distributes leads equally among active telecallers.
+Performance weighted
+High conversion telecallers get more leads based on last 30 days conversion.
+Round robin
+Each new lead assigned in rotation.
+Region/language based
+Assign by city/state/language skill if stored.
+Pause underperformer
+Agency owner can pause a telecaller; no new leads assigned.
+[Heading1] 15. Volunteer, Event, Attendance and Certificate ERP
+Volunteer screen
+Buttons
+Behavior
+Volunteer login dashboard
+View Upcoming Events, My Registrations, My Hours, Download Certificate
+Shows events open to volunteers.
+Event detail
+Register, Cancel Registration, Add to Calendar
+Checks capacity, eligibility and registration window.
+Event check-in
+QR Check-In / Manual Check-In
+Stores time, device, coordinator.
+Task board
+Accept Task, Mark Done
+Task approval required by coordinator.
+Certificate center
+Download Certificate
+Allowed after attendance/hours threshold met.
+Event field
+Type
+Required
+Rules
+event_name
+Text
+Yes
+Public title
+event_type
+Dropdown
+Yes
+Volunteer/Donation/CSR/Medical/Religious/Training
+campaign_id
+Optional
+No
+Link to campaign
+start_datetime
+Datetime
+Yes
+Future or admin permitted
+end_datetime
+Datetime
+Yes
+After start
+location
+Text/Map
+Yes
+Offline/Online/Hybrid
+capacity
+Number
+Optional
+If full, waitlist
+volunteer_roles_needed
+Multi-select
+Optional
+Skills
+registration_open_until
+Datetime
+Optional
+Cutoff
+certificate_enabled
+Boolean
+Yes
+If yes, certificate template required
+attendance_required
+Boolean
+Yes
+Controls certificate
+[Heading1] 16. Campaign, Cause, Case and Service Marketplace
+Module
+Rule
+Campaign
+Fundraising page. Can be assigned to fundraisers/agencies/telecallers.
+Cause
+Broader donation category; may contain campaigns.
+Case
+Individual/project story. Starter can create unlimited drafts but only 5 active at one time.
+Case overage
+Price pending; must be configurable in Super Admin.
+Campaign creation service
+NGO can request Govindani service from dashboard; status and billing tracked.
+Website migration
+Request service with old website URL, access details, scope, quote, approval and status.
+Bulk import
+Direct import up to 25,000 records; above that creates request and file goes to Govindani admin/developer queue.
+[Heading1] 17. Support Ticketing and Service Desk
+Ticket category
+Who can raise
+Default routing
+Billing/subscription
+NGO Owner
+Govindani billing team
+Website/domain
+NGO Owner/Manager
+Tech support
+Donation/payment
+NGO Owner/Accounts
+Payment support
+Compliance/CA
+NGO Owner/CA
+CA support
+Bulk import
+NGO Owner/Manager
+Data migration team
+WhatsApp/SMS
+NGO Owner/Manager
+Communication support
+Bug report
+Any logged in admin
+Product support
+Feature request
+NGO Owner
+Product backlog
+[Heading1] 18. Security, Audit, Retention and Delete Rules
+Action
+Audit required
+Data behavior
+Tenant created/suspended/restored
+Yes
+Store actor, reason, timestamp.
+Plan selected/upgraded/downgrade requested
+Yes
+Store plan snapshot.
+Payment success/failure
+Yes
+Store gateway ref and status.
+User created/disabled/role changed
+Yes
+Old/new permission snapshot.
+Donor created/edited/imported
+Yes
+Sensitive fields masked in audit view.
+Donation created/edited/voided
+Yes
+No hard delete; create reversal/void.
+Receipt generated/sent/downloaded
+Yes
+Immutable PDF snapshot.
+PAN/address update link used
+Yes
+Token, IP/device, fields changed.
+10BD export
+Yes
+Filters, row count, checksum, file refs.
+10BE import/match/send
+Yes
+ZIP checksum, match score, approver.
+Fundraiser payout marked paid
+Yes
+Payment mode, proof, TDS fields.
+Permanent delete
+Yes + Super Admin only
+Only allowed for failed/test tenant before financial transactions; otherwise forbidden.
+[Heading1] 19. Data Retention
+Data type
+Retention
+Rule
+Donation records
+Permanent/statutory
+Soft delete only.
+Receipts/80G/10BE
+Permanent/statutory
+Private object storage, signed URLs.
+Generated exports
+60 days active download
+Keep audit and allow regeneration if source exists.
+Audit logs
+Permanent/system retention
+Append-only.
+Communication logs
+12-24 months minimum
+Configurable.
+Trial inactive leads
+Configurable
+Can archive; no hard delete unless no financial records.
+Support tickets
+5 years recommended
+Configurable.
+Uploaded documents
+Until tenant deletion/contract policy
+Secure storage.
+[Heading1] 20. Database Schema
+Table
+Purpose
+Tenant rule
+ngo_tenants
+Ngo Tenants
+tenant_id required
+tenant_profiles
+Tenant Profiles
+tenant_id required
+tenant_compliance_profiles
+Tenant Compliance Profiles
+tenant_id required
+tenant_documents
+Tenant Documents
+tenant_id required
+tenant_branding
+Tenant Branding
+tenant_id required
+tenant_domains
+Tenant Domains
+tenant_id required
+subscription_plans
+Subscription Plans
+global or tenant scoped
+tenant_subscriptions
+Tenant Subscriptions
+tenant_id required
+subscription_invoices
+Subscription Invoices
+tenant_id required
+coupon_codes
+Coupon Codes
+global or tenant scoped
+addon_subscriptions
+Addon Subscriptions
+tenant_id required
+usage_ledgers
+Usage Ledgers
+tenant_id required
+payment_attempts
+Payment Attempts
+tenant_id required
+users
+Users
+tenant_id required
+roles
+Roles
+tenant_id required
+permissions
+Permissions
+global or tenant scoped
+role_permissions
+Role Permissions
+tenant_id required
+user_tenant_roles
+User Tenant Roles
+tenant_id required
+impersonation_sessions
+Impersonation Sessions
+tenant_id required
+donors
+Donors
+tenant_id required
+donor_contacts
+Donor Contacts
+tenant_id required
+donor_addresses
+Donor Addresses
+tenant_id required
+donor_consents
+Donor Consents
+tenant_id required
+donor_documents
+Donor Documents
+tenant_id required
+donations
+Donations
+tenant_id required
+donation_receipts
+Donation Receipts
+tenant_id required
+receipt_sequences
+Receipt Sequences
+tenant_id required
+held_receipts
+Held Receipts
+tenant_id required
+bank_accounts
+Bank Accounts
+tenant_id required
+bank_reconciliation
+Bank Reconciliation
+tenant_id required
+campaigns
+Campaigns
+tenant_id required
+causes
+Causes
+tenant_id required
+cases
+Cases
+tenant_id required
+case_billing_requests
+Case Billing Requests
+tenant_id required
+fundraiser_groups
+Fundraiser Groups
+tenant_id required
+fundraisers
+Fundraisers
+tenant_id required
+agencies
+Agencies
+tenant_id required
+agency_telecallers
+Agency Telecallers
+tenant_id required
+telecaller_groups
+Telecaller Groups
+tenant_id required
+fundraising_links
+Fundraising Links
+tenant_id required
+fundraising_clicks
+Fundraising Clicks
+tenant_id required
+fundraising_attribution
+Fundraising Attribution
+tenant_id required
+commission_rules
+Commission Rules
+tenant_id required
+commission_ledgers
+Commission Ledgers
+tenant_id required
+withdrawal_requests
+Withdrawal Requests
+tenant_id required
+payout_payment_logs
+Payout Payment Logs
+tenant_id required
+events
+Events
+tenant_id required
+event_registrations
+Event Registrations
+tenant_id required
+volunteers
+Volunteers
+tenant_id required
+volunteer_tasks
+Volunteer Tasks
+tenant_id required
+volunteer_attendance
+Volunteer Attendance
+tenant_id required
+volunteer_certificates
+Volunteer Certificates
+tenant_id required
+compliance_validation_errors
+Compliance Validation Errors
+tenant_id required
+tenbd_batches
+Tenbd Batches
+tenant_id required
+tenbd_rows
+Tenbd Rows
+tenant_id required
+tenbe_import_batches
+Tenbe Import Batches
+tenant_id required
+tenbe_certificates
+Tenbe Certificates
+tenant_id required
+tenbe_matches
+Tenbe Matches
+tenant_id required
+certificate_dispatch_logs
+Certificate Dispatch Logs
+tenant_id required
+communication_templates
+Communication Templates
+tenant_id required
+communication_logs
+Communication Logs
+tenant_id required
+sms_wallets
+Sms Wallets
+tenant_id required
+whatsapp_wallets
+Whatsapp Wallets
+tenant_id required
+website_pages
+Website Pages
+tenant_id required
+website_media
+Website Media
+tenant_id required
+wordpress_plugin_keys
+Wordpress Plugin Keys
+tenant_id required
+api_keys
+Api Keys
+tenant_id required
+support_tickets
+Support Tickets
+tenant_id required
+service_requests
+Service Requests
+tenant_id required
+bulk_import_requests
+Bulk Import Requests
+tenant_id required
+export_jobs
+Export Jobs
+tenant_id required
+audit_logs
+Audit Logs
+tenant_id required
+[Heading1] 21. API and Service Groups
+Service group
+Representative endpoints/actions
+Auth
+POST /auth/login-password, /auth/login-otp, /auth/verify-otp, /auth/logout
+Tenant SaaS
+/saas/tenants, /saas/tenants/{id}/suspend, /saas/impersonate
+Onboarding
+/onboarding/register, /onboarding/documents, /onboarding/status
+Billing
+/billing/plans, /billing/subscribe, /billing/invoices, /billing/addons, /billing/usage/release
+Website
+/website/pages, /website/media, /website/domain, /wordpress/plugin-key
+Donors
+/donors, /donors/import, /donors/{id}, /donors/missing-data-link
+Donations
+/donations/manual, /donations/intent, /donations/callback, /receipts/generate
+CA Compliance
+/compliance/dashboard, /10bd/validate, /10bd/export, /10be/import, /10be/match
+Fundraising
+/fundraisers, /agencies, /telecallers, /tracking-links, /commission-rules, /withdrawals
+Events/Volunteers
+/events, /volunteers, /event-registrations, /attendance, /certificates
+Communication
+/templates, /messages/email, /messages/whatsapp, /messages/sms, /logs
+Support
+/tickets, /service-requests, /bulk-import-requests
+Reports
+/reports/query, /exports/request, /exports/{id}/download
+Audit
+/audit-logs
+[Heading1] 22. Frontend Screen Registry and Button Behavior
+URL
+Screen
+Primary buttons
+Behavior
+/login
+Login
+Login, Continue with OTP
+Redirect by role.
+/saas/dashboard
+Super Admin Dashboard
+Create NGO, View Subscriptions, Support Queue, Impersonate
+Govindani internal only.
+/saas/tenants/new
+Create NGO
+Save Draft, Create Tenant, Send Invite
+Creates tenant shell.
+/onboarding/register
+NGO Registration
+Save & Continue, Save Draft
+No plan required.
+/onboarding/plans
+Plan Selection
+View Details, Choose Plan, Start Trial
+Shows eye buttons.
+/admin/dashboard
+NGO Owner Dashboard
+Record Donation, Create Campaign, View Alerts, Upgrade
+Tenant home.
+/admin/website
+Website Setup
+Preview, Publish, Connect Domain
+Fixed template CMS.
+/admin/donations/onboarding
+Donation Form Setup
+Save Form, Preview, Publish
+Controls public donation intake.
+/ca/dashboard
+CA Dashboard
+Run Validation, Export, View Errors
+Compliance only.
+/ca/10bd
+10BD Center
+Validate, Export Pack, Download Errors
+Permission gated.
+/ca/10be
+10BE Center
+Upload ZIP, Process, Review, Send
+No auto-send on weak match.
+/agency/dashboard
+Agency Dashboard
+Accept Campaign, Distribute, Auto-Distribute
+Agency owner.
+/telecaller/leads
+Telecaller Leads
+Call, Add Note, Set Follow-Up, Mark Converted
+No export.
+/fundraiser/dashboard
+Fundraiser Dashboard
+Copy Link, Download QR, Request Withdrawal
+Own data only.
+/volunteer/events
+Volunteer Events
+Register, Cancel, Check-In
+Volunteer login.
+/donor/dashboard
+Donor Dashboard
+Download Receipt, Submit PAN, Update Profile
+OTP login.
+/support/tickets
+Support Tickets
+Raise Ticket, Reply, Close
+All tenant admins.
+[Heading1] 23. ERP Diagrams
+Diagram 1: SaaS tenant lifecycle
+Govindani Super Admin -> Create/Approve NGO -> NGO Registration Saved -> Plan Selection/Trial -> Payment/Trial Activation -> Website/Domain Setup -> Payment Gateway Setup -> Campaign Setup -> Users/Roles -> Go Live -> Usage/Billing/Support/Compliance Monitoring
+Diagram 2: Donation and compliance lifecycle
+Donor visits campaign/QR -> Donation onboarding form -> Gateway/UPI payment -> Donation created -> Receipt generated or held -> Donor CRM updated -> PAN/address validation -> 10BD readiness -> CA export pack -> 10BE import/match -> Certificate dispatch -> Annual receipt/statement
+Diagram 3: Fundraiser/agency/telecaller lifecycle
+NGO creates campaign -> Enables fundraising -> Assigns fundraiser/agency/telecaller group -> Tracking links/QR generated -> Agency distributes to telecallers -> Donor donation captured with attribution -> Commission ledger calculated -> Withdrawal request -> Admin approval -> Mark paid/not payable/remind -> Email/payout audit -> CA payout/TDS report
+Diagram 4: Volunteer/event lifecycle
+NGO creates event -> Volunteers see event -> Register/waitlist -> Check-in attendance -> Hours calculated -> Task completion -> Certificate eligibility -> Certificate generated -> Volunteer report
+[Heading1] 24. QA Checklist and Developer Mistakes to Avoid
+[ListBullet] Login as every demo user; verify landing page and menu are different.
+[ListBullet] Try to access CA export as telecaller; must deny.
+[ListBullet] Register NGO without selecting plan; lead must save.
+[ListBullet] Start trial; locked modules visible blurred with Upgrade to See.
+[ListBullet] Exceed receipt limit; receipts held, not deleted.
+[ListBullet] Pay overage; held receipts released and no double charge.
+[ListBullet] Create campaign assigned to agency; agency receives campaign.
+[ListBullet] Agency auto-distributes to telecallers; telecaller sees assigned leads only.
+[ListBullet] Donation through telecaller link stores agency + telecaller attribution.
+[ListBullet] Repeat donation after 90 days respects commission toggle.
+[ListBullet] Fundraiser requests withdrawal; admin marks paid with bank/cash/UPI details.
+[ListBullet] Refunded donation reduces commission if exclude_refunds enabled.
+[ListBullet] 10BE name-only match must never auto-send.
+[ListBullet] PAN masked except permitted internal handling.
+[ListBullet] Backdated donation allowed only to permitted roles.
+[ListBullet] NGO owner can edit generated receipt-linked donation only with audit.
+[ListBullet] CA dashboard export permissions configurable.
+[ListBullet] Super Admin impersonation logged.
+[ListBullet] Permanent delete blocked for financial tenant.
+[ListBullet] Bulk import above 25,000 goes to request queue.
+[ListBullet] FCRA hidden unless enabled.
+[ListBullet] Downgrade request cannot be instant.
+[ListBullet] Website gallery rejects images above 1 MB.
+[ListBullet] Video gallery accepts YouTube/Instagram URL, not video upload.
+[ListBullet] WordPress shortcode API respects tenant token and rate limit.
+[ListBullet] Pro API key can be revoked and scoped.
+[Heading1] 25. Open Founder/CA Decisions
+[ListBullet] Final price for active cases above Starter limit of 5.
+[ListBullet] Final receipt overage: ₹0.50 or ₹1 per receipt.
+[ListBullet] Final SMS provider and margin over ₹0.40 estimate.
+[ListBullet] Exact WhatsApp credit rate and recharge slab.
+[ListBullet] Whether fundraiser/agency commission payout requires invoice/bill upload for every payout.
+[ListBullet] Final TDS rate/threshold under current law must be verified by practising CA before launch.
+[ListBullet] Whether agency/fundraiser can see donor mobile/email or only masked details.
+[ListBullet] Billing grace period after failed subscription payment.
+[ListBullet] Whether CA users count under plan seats or separate entitlement.
+[ListBullet] Whether import above 25,000 records is free support or paid migration service.
+[Heading1] 26. Source Reference Notes
+Primary internal sources: NGO OS Enterprise Developer Master Blueprint v2.0; Govindani NGO OS Supreme Strategic Master Document; pricing and feature comparison image provided by founder; uploaded HTML prototype ZIP and screenshots.
+Official/current web references used for compliance direction: Income Tax Department Form 10BD/10BE user manual and FAQ; CBIC CGST Rule 46 tax invoice particulars; MHA FCRA FC-4 portal/form; NGO Darpan public fields; Razorpay and Cashfree official developer documentation. These must be rechecked before production release because tax law, forms and portal utilities change.
+[Heading1] 27. Screen-by-Screen Prototype Specification - No Guessing Zone
+This section converts the blueprint into concrete prototype screens. Developers must not invent button labels or behaviors unless a ticket explicitly changes this document.
+[Heading2] Screen Spec: Super Admin - SaaS Dashboard
+Field
+Value
+URL
+/saas/dashboard
+Primary buttons
+Create NGO, View All NGOs, Subscriptions, Billing Alerts, Support Queue, Global Settings
+Dashboard widgets/sections
+Total active NGOs, Trial NGOs, Suspended NGOs, MRR, ARR estimate, Receipt overage revenue, WhatsApp credit revenue, Open tickets, Bulk import queue
+Button
+Placement
+Click behavior
+Audit
+Create NGO
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+View All NGOs
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Subscriptions
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Billing Alerts
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Support Queue
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Global Settings
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Click Create NGO -> /saas/tenants/new
+[ListBullet] Click tenant row -> tenant detail
+[ListBullet] Click Impersonate -> creates impersonation session and redirects to /admin/dashboard
+[Heading2] Screen Spec: Super Admin - Tenant Detail
+Field
+Value
+URL
+/saas/tenants/{id}
+Primary buttons
+Impersonate, Suspend, Restore, Upgrade Plan, Create Invoice, Add Credit, View Audit
+Dashboard widgets/sections
+Tenant status, Plan, Billing cycle, Usage limits, Domain status, Payment gateway status, Open service requests, CA alerts
+Button
+Placement
+Click behavior
+Audit
+Impersonate
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Suspend
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Restore
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Upgrade Plan
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Create Invoice
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Add Credit
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+View Audit
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Suspend requires reason
+[ListBullet] Upgrade immediate
+[ListBullet] Downgrade request only
+[ListBullet] Impersonate banner must stay visible
+[Heading2] Screen Spec: NGO Registration
+Field
+Value
+URL
+/onboarding/register
+Primary buttons
+Save Draft, Save & Continue, Back
+Dashboard widgets/sections
+Owner details, Organization basics, Legal details, Documents, Address
+Button
+Placement
+Click behavior
+Audit
+Save Draft
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Save & Continue
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Back
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Save even without plan
+[ListBullet] Create lead/tenant shell
+[ListBullet] Notify Govindani sales/support
+[Heading2] Screen Spec: Plan Selection
+Field
+Value
+URL
+/onboarding/plans
+Primary buttons
+View Feature, Choose Plan, Start Trial, Apply Coupon
+Dashboard widgets/sections
+Starter/Growth/Pro cards, Duration toggle, GST estimate, Add-ons
+Button
+Placement
+Click behavior
+Audit
+View Feature
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Choose Plan
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Start Trial
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Apply Coupon
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Eye button opens drawer
+[ListBullet] Trial only Starter
+[ListBullet] Payment creates subscription attempt
+[Heading2] Screen Spec: NGO Owner Dashboard
+Field
+Value
+URL
+/admin/dashboard
+Primary buttons
+Record Donation, Create Campaign, View Compliance Alerts, Upgrade, Raise Ticket
+Dashboard widgets/sections
+Today collection, Monthly collection, Held receipts, Missing PAN, 10BD ready, 10BE pending, Renewal due, Fundraiser leaderboard
+Button
+Placement
+Click behavior
+Audit
+Record Donation
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Create Campaign
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+View Compliance Alerts
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Upgrade
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Raise Ticket
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Widget click applies filters
+[ListBullet] Upgrade CTA opens plan comparison
+[Heading2] Screen Spec: Website Setup
+Field
+Value
+URL
+/admin/website
+Primary buttons
+Preview, Publish, Connect Domain, Upload Logo, Save Colors
+Dashboard widgets/sections
+Page list, Theme colors, Gallery, SEO, Donate button target
+Button
+Placement
+Click behavior
+Audit
+Preview
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Publish
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Connect Domain
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Upload Logo
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Save Colors
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Publishing requires domain or preview URL
+[ListBullet] Gallery rejects >1 MB images
+[Heading2] Screen Spec: Donation Form Setup
+Field
+Value
+URL
+/admin/donation-form
+Primary buttons
+Preview Form, Save Rules, Publish
+Dashboard widgets/sections
+Required fields toggles, PAN behavior, Address behavior, Consent checkboxes, Receipt delivery settings
+Button
+Placement
+Click behavior
+Audit
+Preview Form
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Save Rules
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Publish
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Public donation form updates immediately after publish
+[Heading2] Screen Spec: Campaign Manager
+Field
+Value
+URL
+/admin/campaigns
+Primary buttons
+Create Campaign, Assign Fundraisers, Pin to Website, Archive
+Dashboard widgets/sections
+Campaigns, Cases, Causes, Active case count, Funds raised
+Button
+Placement
+Click behavior
+Audit
+Create Campaign
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Assign Fundraisers
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Pin to Website
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Archive
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Starter active case limit enforced
+[ListBullet] Draft cases unlimited
+[Heading2] Screen Spec: Fundraising Assignment
+Field
+Value
+URL
+/admin/fundraising/assign
+Primary buttons
+Select Fundraisers, Select Agency, Select Telecaller Group, Create Links, Notify
+Dashboard widgets/sections
+Commission rule, Attribution scope, Recurring toggle, Validity days
+Button
+Placement
+Click behavior
+Audit
+Select Fundraisers
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Select Agency
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Select Telecaller Group
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Create Links
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Notify
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Creates one tracking link per assignee
+[ListBullet] Sends notifications
+[Heading2] Screen Spec: Agency Dashboard
+Field
+Value
+URL
+/agency/dashboard
+Primary buttons
+Accept Campaign, Distribute Leads, Auto-Distribute, View Telecallers, Request Payout
+Dashboard widgets/sections
+Assigned campaigns, Agency raised amount, Telecaller leaderboard, Pending payout
+Button
+Placement
+Click behavior
+Audit
+Accept Campaign
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Distribute Leads
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Auto-Distribute
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+View Telecallers
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Request Payout
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Agency sees only assigned campaigns and own telecaller data
+[Heading2] Screen Spec: Telecaller Leads
+Field
+Value
+URL
+/telecaller/leads
+Primary buttons
+Call, Add Note, Set Follow-Up, Mark Interested, Mark Donated, Transfer Lead
+Dashboard widgets/sections
+Assigned leads, Campaign scripts, Follow-up calendar, Conversion status
+Button
+Placement
+Click behavior
+Audit
+Call
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Add Note
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Set Follow-Up
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Mark Interested
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Mark Donated
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Transfer Lead
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] No export
+[ListBullet] No full PAN
+[ListBullet] Every note timestamped
+[Heading2] Screen Spec: Fundraiser Dashboard
+Field
+Value
+URL
+/fundraiser/dashboard
+Primary buttons
+Copy Link, Download QR, Share WhatsApp, Request Withdrawal
+Dashboard widgets/sections
+Own campaigns, Amount raised, Eligible commission, Pending payout, Donor count masked
+Button
+Placement
+Click behavior
+Audit
+Copy Link
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Download QR
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Share WhatsApp
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Request Withdrawal
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Own data only
+[ListBullet] Request withdrawal checks minimum amount
+[Heading2] Screen Spec: CA Dashboard
+Field
+Value
+URL
+/ca/dashboard
+Primary buttons
+Run Validation, Export Report, Open Missing Data, Download Audit
+Dashboard widgets/sections
+10BD readiness, 10BE pending, PAN missing, Address missing, Receipt status, Bank reconciliation
+Button
+Placement
+Click behavior
+Audit
+Run Validation
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Export Report
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Open Missing Data
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Download Audit
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Export depends on permission
+[ListBullet] PAN masked unless CA_EXPORT + PAN permission
+[Heading2] Screen Spec: 10BD Center
+Field
+Value
+URL
+/ca/10bd
+Primary buttons
+Select FY, Run Validation, Export Valid, Download Errors, Create Filing Pack
+Dashboard widgets/sections
+Validation queue, Missing PAN/address, Duplicate donors, Included/excluded rows
+Button
+Placement
+Click behavior
+Audit
+Select FY
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Run Validation
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Export Valid
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Download Errors
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Create Filing Pack
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Batch freezes snapshot
+[ListBullet] Checksum and manifest generated
+[Heading2] Screen Spec: 10BE Center
+Field
+Value
+URL
+/ca/10be
+Primary buttons
+Upload ZIP, Process, Review Matches, Approve, Send Certificates
+Dashboard widgets/sections
+Import summary, Auto matches, Manual review, Dispatch queue
+Button
+Placement
+Click behavior
+Audit
+Upload ZIP
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Process
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Review Matches
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Approve
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Send Certificates
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Name-only match cannot auto-send
+[ListBullet] Approval required before dispatch if setting enabled
+[Heading2] Screen Spec: Volunteer Events
+Field
+Value
+URL
+/volunteer/events
+Primary buttons
+Register, Cancel, Check-In, Download Certificate
+Dashboard widgets/sections
+Upcoming events, My registrations, My hours, My certificates
+Button
+Placement
+Click behavior
+Audit
+Register
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Cancel
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Check-In
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Download Certificate
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Capacity and eligibility checked
+[Heading2] Screen Spec: Donor Dashboard
+Field
+Value
+URL
+/donor/dashboard
+Primary buttons
+Download Receipt, Submit PAN, Update Address, Download Annual Statement
+Dashboard widgets/sections
+Donation history, Receipts, 10BE certificates, Profile completion
+Button
+Placement
+Click behavior
+Audit
+Download Receipt
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Submit PAN
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Update Address
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Download Annual Statement
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Email OTP login default
+[ListBullet] SMS OTP only if add-on enabled
+[Heading2] Screen Spec: Support Desk
+Field
+Value
+URL
+/support/tickets
+Primary buttons
+Raise Ticket, Reply, Attach File, Close
+Dashboard widgets/sections
+Ticket status, SLA, Assigned team, History
+Button
+Placement
+Click behavior
+Audit
+Raise Ticket
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Reply
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Attach File
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+Close
+Top bar or action area
+As defined for this screen. Validate permission and plan gate.
+Yes for financial/compliance/user/support actions
+[ListBullet] Each service request can link to billing quote
+[Heading1] 28. Complete Form Field Registry
+[Heading2] NGO Owner User Creation Form
+Field key
+Type
+Required
+Rule
+full_name
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+email
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+mobile
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+role
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+custom_permissions
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+status
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+send_invite
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+notes
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] Agency Creation Form
+Field key
+Type
+Required
+Rule
+agency_name
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+owner_name
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+owner_mobile
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+owner_email
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+agency_pan
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+agency_gstin
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+address
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+commission_default
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+telecaller_limit
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+status
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+agreement_upload
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] Telecaller Creation Form
+Field key
+Type
+Required
+Rule
+telecaller_name
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+mobile
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+email
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+agency_id
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+language
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+city
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+state
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+daily_lead_capacity
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+status
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+assigned_group
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] Fundraiser Creation Form
+Field key
+Type
+Required
+Rule
+fundraiser_name
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+type
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+mobile
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+email
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+pan
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+bank_account_name
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+bank_account_number_masked
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+ifsc
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+upi_id
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+commission_default
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+agreement_upload
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+status
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] Commission Rule Form
+Field key
+Type
+Required
+Rule
+rule_name
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+campaign_id
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+commission_percent
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+basis
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+attribution_scope
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+validity_days
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+include_recurring
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+include_repeat_donation
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+exclude_refunds
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+tds_applicable
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+tds_rate
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+minimum_payout
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+approval_required
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] Withdrawal Request Form
+Field key
+Type
+Required
+Rule
+requester_type
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+requester_id
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+ledger_period
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+requested_amount
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+bank_or_upi
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+invoice_upload
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+remarks
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] Admin Mark Paid Form
+Field key
+Type
+Required
+Rule
+payment_status
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+paid_amount
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+payment_mode
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+bank_account_paid_from
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+transaction_reference
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+cash_voucher_no
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+tds_deducted
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+tds_amount
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+proof_upload
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+admin_notes
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+reminder_date_if_hold
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] CA Export Request Form
+Field key
+Type
+Required
+Rule
+report_type
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+financial_year
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+date_range
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+include_pan
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+include_sensitive_fields
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+export_format
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+purpose
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+confirmation_checkbox
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] Bulk Import Request Form
+Field key
+Type
+Required
+Rule
+import_type
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+record_count_estimate
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+file_upload
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+mapping_notes
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+urgent
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+service_quote_required
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+contact_person
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] Website Migration Request Form
+Field key
+Type
+Required
+Rule
+old_website_url
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+domain_provider
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+hosting_provider
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+required_pages
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+content_ready
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+special_requirements
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+quote_required
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] Event Creation Form
+Field key
+Type
+Required
+Rule
+event_name
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+event_type
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+campaign_id
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+start_datetime
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+end_datetime
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+location
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+capacity
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+volunteer_roles
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+registration_deadline
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+certificate_enabled
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+attendance_required
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+coordinator_id
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] Volunteer Registration Form
+Field key
+Type
+Required
+Rule
+name
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+mobile
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+email
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+city
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+skills
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+availability
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+id_proof_optional
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+emergency_contact
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+consent
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+preferred_events
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading2] Support Ticket Form
+Field key
+Type
+Required
+Rule
+module
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+category
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+priority
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+subject
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+description
+Text/Enum/File/Date as per field
+Required
+Store old and new value on edit if sensitive
+attachment
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+callback_required
+Text/Enum/File/Date as per field
+Conditional/Optional
+Store old and new value on edit if sensitive
+[Heading1] 29. Report Detail Expansion - CA Department
+Report
+Users
+Filters
+Export
+Developer notes
+Donation Summary by FY
+CA / NGO Owner
+FY, campaign, donor type, payment mode
+CSV/XLSX/PDF
+Total amount, eligible amount, receipt count, held receipts, voids.
+Receipt Register
+CA / Compliance
+FY, receipt status, campaign
+XLSX/PDF
+Receipt number continuity, generated/sent/downloaded status.
+Void/Reversal Register
+CA / Owner
+Date range, reason
+XLSX
+Tracks financial correction; no deletion.
+Bank Account Collection Register
+Accounts / CA
+Bank account, FY, campaign
+XLSX
+Manual donation bank mapping and reconciliation.
+Unreconciled Donation Report
+Accounts / CA
+Bank account, date range
+XLSX
+Shows risk items requiring accounts action.
+10BD Filing Pack
+CA
+FY
+XLSX/CSV/PDF/JSON manifest
+Valid rows + validation errors + audit summary.
+10BE Dispatch Register
+CA
+FY, status
+XLSX
+Matched, approved, sent, bounced, downloaded.
+PAN Recovery Follow-Up
+Compliance
+PAN status
+XLSX
+Attempts, token state, completion.
+Address Recovery Follow-Up
+Compliance
+Address status
+XLSX
+Attempts, token state, completion.
+FCRA Receipt Register
+CA
+FCRA enabled only
+XLSX
+Foreign donor, country, purpose, FCRA bank.
+CSR Donor Pipeline
+CSR Manager
+Corporate donor, stage
+XLSX
+Proposal, agreement, utilization.
+Fundraiser Payout/TDS Register
+CA / Owner
+Fundraiser/agency, period
+XLSX/PDF
+Gross, TDS, net payable, payment proof.
+Agency Conversion Report
+Fundraising Manager
+Agency, period
+XLSX
+Leads, calls, conversion, amount.
+Telecaller Follow-Up Report
+Agency / Manager
+Telecaller, date
+XLSX
+Due calls, missed follow-ups, conversions.
+Volunteer Hours Report
+Operations
+Event/volunteer/date
+XLSX/PDF
+Hours, attendance, certificate eligibility.
+Event Registration Report
+Operations
+Event
+XLSX
+Registered, attended, no-show, waitlist.
+GST SaaS Invoice Register
+Super Admin
+Date range, plan, tenant
+XLSX/PDF
+Subscription/add-on invoices.
+Usage and Overage Report
+Super Admin / NGO Owner
+Tenant, period
+XLSX
+Receipts, SMS, WhatsApp, API, cases.
+Support SLA Report
+Super Admin
+Priority, team
+XLSX
+Open, overdue, resolution time.
+Audit Trail Report
+Super Admin / CA
+Module/action/date
+XLSX/PDF
+Actor, IP, old/new refs, reason.
+[Heading1] 30. Notification Matrix
+Trigger
+Recipient
+Channel
+Timing
+NGO registered without plan
+Super Admin sales/support
+Email + dashboard
+Immediate
+Trial created
+NGO Owner
+Email + dashboard
+Immediate
+Trial 3 days left
+NGO Owner
+Email/WhatsApp if enabled
+T-3 days
+Subscription renewal due
+NGO Owner
+Email/WhatsApp
+Daily from T-7
+Payment failed
+NGO Owner + Super Admin
+Email/WhatsApp/dashboard
+Immediate and daily until grace ends
+Tenant suspended
+NGO Owner
+Email/dashboard
+After grace period
+Receipt limit crossed
+NGO Owner
+Dashboard/email
+Immediate
+Held receipts pending
+NGO Owner
+Dashboard
+Every login
+Campaign assigned to agency
+Agency Owner
+In-app/email/WhatsApp
+Immediate
+Lead assigned to telecaller
+Telecaller
+In-app
+Immediate
+Follow-up due
+Telecaller
+In-app/email optional
+Due time
+Withdrawal requested
+NGO Owner/Fundraising Manager
+Dashboard/email
+Immediate
+Payout marked paid
+Fundraiser/Agency
+Email/in-app
+Immediate
+10BD errors found
+CA/Compliance
+Dashboard/email
+After validation
+10BE ZIP processed
+CA/Compliance
+Dashboard/email
+After processing
+Certificate dispatch failed
+CA/Compliance
+Dashboard/email
+Immediate
+Volunteer registered event
+Operations Manager
+Dashboard/email optional
+Immediate
+Support ticket raised
+Support team
+Dashboard/email
+Immediate
+[Heading1] 31. SaaS Scale Architecture
+Target design should support thousands of NGOs without rewriting core modules. Start as modular monolith, but isolate services by package and database boundaries so modules can later split.
+Scale concern
+Decision
+Tenant isolation
+Every business table has tenant_id; query filters mandatory; add database constraints where possible.
+Object storage
+Receipts, certificates, uploads, exports stored privately with tenant path and signed URLs.
+Queue workers
+Email, WhatsApp, SMS, PDF generation, exports, imports and ZIP processing run async.
+Rate limits
+API keys, donor update tokens, OTP, WordPress plugin endpoints and public donation forms must have rate limits.
+Large imports
+Above 25,000 rows route to admin/developer queue; process through background job with validation report.
+Exports
+Export job table, status, checksum, retention, permission snapshot.
+Audit
+Append-only audit logs; do not allow user edits.
+Configurable compliance
+Government format mappings stored in versioned templates, not hard-coded.
+Feature flags
+Plan entitlements and tenant-specific toggles drive UI and API access.
+Impersonation
+Super Admin impersonation must be explicit, logged and visually bannered.
+[Heading1] 32. Developer Implementation Sequence
+[ListNumber] Create role-based auth and demo users first.
+[ListNumber] Implement tenant table and tenant context middleware before any module.
+[ListNumber] Implement plan entitlement engine and locked UI components.
+[ListNumber] Implement onboarding registration and plan selection.
+[ListNumber] Implement NGO owner dashboard and website settings.
+[ListNumber] Implement donor and donation onboarding flow.
+[ListNumber] Implement receipt generation/held receipt engine.
+[ListNumber] Implement CA dashboard, 10BD validation and 10BE import simulation.
+[ListNumber] Implement fundraiser/agency/telecaller assignment and attribution.
+[ListNumber] Implement commission ledger and withdrawal workflow.
+[ListNumber] Implement volunteer/event module.
+[ListNumber] Implement billing/add-ons/usage.
+[ListNumber] Implement support desk and service requests.
+[ListNumber] Implement audit logs everywhere.
+[ListNumber] Only after prototype stabilizes, connect real Razorpay/Cashfree/Meta/SMTP integrations.
+[Heading1] 33. Risk Register
+Risk
+Impact
+Mitigation
+Trying to build every feature backend first
+Delay and confusion
+Prototype role flows first, then backend modules.
+PAN/full sensitive data shown widely
+Compliance/privacy risk
+Mask by default; export permission required.
+Commission/TDS hardcoded wrong
+Legal/CA issue
+Configurable rates and CA verification warning.
+Plan lock only frontend
+Revenue leakage
+Backend entitlement checks mandatory.
+Agency sees all donor data
+Privacy breach
+Agency scope limited to assigned/attributed leads.
+10BE weak match auto-sent
+Wrong certificate sent
+Auto-send only high confidence and approval setting.
+Receipt overage double charged
+Customer anger
+One charge covers generation/send/download.
+Downgrade instant
+Data exceeds plan and breaks UX
+Request-only downgrade.
+Government forms change
+Product breaks annually
+Versioned template mappings.
+Founder keeps adding scope mid-build
+Never ships
+Freeze v1 scope from this doc.
+[Heading1] 34. Final Instruction to Developers
+Do not build scattered pages. Build a controlled multi-tenant NGO SaaS OS. The system must have tenant isolation, role routing, plan entitlement, audit logs, donor identity, donation ledger, compliance validation, communication logs and billing state from the first prototype. If a developer builds a screen without knowing which role can see it, which plan unlocks it, which table stores it, which audit event logs it and which report consumes it, the work is incomplete.

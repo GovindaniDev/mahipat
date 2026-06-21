@@ -1,0 +1,48 @@
+/* ============================================================
+   TYPOGRAPHY — Inter (UI) + JetBrains Mono (numeric/IDs)
+   ============================================================ */
+:root {
+  /* Families */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Weights */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-extra:    800;
+
+  /* Type scale (px-based, rem values) */
+  --text-2xs: 0.625rem;   /* 10px — micro labels, sidebar captions */
+  --text-xs:  0.6875rem;  /* 11px — table headers, eyebrows */
+  --text-sm:  0.8125rem;  /* 13px — body small, table cells */
+  --text-base:0.875rem;   /* 14px — default body */
+  --text-md:  1rem;       /* 16px — emphasized body, login button */
+  --text-lg:  1.125rem;   /* 18px — card values */
+  --text-xl:  1.25rem;    /* 20px — page subtitle */
+  --text-2xl: 1.5rem;     /* 24px — page heading / stat value */
+  --text-3xl: 1.875rem;   /* 30px — hero numbers */
+
+  /* Line heights */
+  --leading-tight:  1.2;
+  --leading-snug:   1.35;
+  --leading-normal: 1.5;
+  --leading-relaxed:1.65;
+
+  /* Letter spacing */
+  --tracking-tight:  -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.05em;
+  --tracking-wider:  0.08em;   /* uppercase eyebrows */
+
+  /* ── Semantic roles ──────────────────────────────────── */
+  --type-page-title:  var(--weight-bold) var(--text-2xl)/var(--leading-tight) var(--font-sans);
+  --type-section:     var(--weight-semibold) var(--text-base)/var(--leading-snug) var(--font-sans);
+  --type-body:        var(--weight-regular) var(--text-base)/var(--leading-normal) var(--font-sans);
+  --type-body-sm:     var(--weight-regular) var(--text-sm)/var(--leading-normal) var(--font-sans);
+  --type-stat:        var(--weight-bold) var(--text-2xl)/var(--leading-tight) var(--font-sans);
+  --type-eyebrow:     var(--weight-semibold) var(--text-xs)/var(--leading-tight) var(--font-sans);
+  --type-button:      var(--weight-semibold) var(--text-base)/1 var(--font-sans);
+}

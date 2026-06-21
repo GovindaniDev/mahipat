@@ -1,0 +1,1574 @@
+NGO OPERATING SYSTEM (NGO OS)ENTERPRISE DEVELOPER MASTER BLUEPRINT
+Donation CRM + 80G + 10BD/10BE + Fundraiser ERP + CA Dashboard + Reporting + Communication Hub
+Document Control
+Details
+Document Type
+Developer-grade functional and technical implementation specification
+Audience
+Founder, project manager, frontend team, backend team, QA, DevOps, CA/compliance reviewer
+Recommended Stack
+React + Spring Boot + PostgreSQL/MySQL + Object Storage + Queue Worker
+Version
+v2.0 Comprehensive Developer Blueprint
+Date
+09 June 2026
+Primary Rule
+If founder is unavailable, developers should still understand every critical module, workflow, table, permission, report, and edge case from this document.
+This document is not a marketing proposal. It is an implementation control document. Headings alone are not enough. Each module below includes page structure, buttons, fields, validations, data tables, APIs, reports, permissions, audit logs, and failure cases wherever applicable.
+[Heading1] 0. Table of Contents
+1. Product intent and strict build philosophy
+2. System architecture and repository/file structure
+3. Roles, permissions and data-access model
+4. Navigation, menus and dashboard architecture
+5. Donor master engine with dynamic donor-type forms
+6. Donation management and manual donation workflow
+7. Bank account mapping and reconciliation layer
+8. 80G compliance and receipt engine
+9. 10BD export exact format and CA/government filing pack
+10. 10BE import, ZIP processing and certificate dispatch
+11. PAN/address compliance recovery engine
+12. Donor dashboard and passwordless donor-update links
+13. Annual consolidated receipt engine
+14. Donor intelligence, NDI scoring and advanced report builder
+15. Fundraiser ERP, tracking links and informational commission ledger
+16. Communication hub: email, WhatsApp, templates and deliverability reports
+17. CA/Auditor dashboard and compliance countdown engine
+18. CSR, FCRA, NVD/data validation and phase-controlled modules
+19. Accounts ledger, salary, membership, appointments, interns and volunteers
+20. Database architecture, table list and field groups
+21. API/service groups and payload behaviour
+22. Frontend page registry, components and UI states
+23. Exports, PDF generation, retention and object storage
+24. Notifications, audit logs, security and privacy
+25. QA checklist, acceptance criteria and edge cases
+[Heading1] 1. Product Intent and Strict Build Philosophy
+The system must be built as a workflow-driven NGO Operating System, not as a basic donation website. The purpose is to manage donors, donation records, tax-compliance workflows, certificate delivery, fundraising attribution, CA-ready reports, communication history, and actionable donor intelligence from a single controlled platform.
+Principle
+Developer meaning
+Non-negotiable output
+Donor-first
+Donor is the primary entity. Donations, receipts, 10BE, communications and fundraising attribution attach to donor journey.
+Every donor profile must show complete 360-degree history.
+Compliance-safe
+10BD/10BE cannot work like simple file upload-send. It needs validation, matching, approval and audit.
+No certificate can be dispatched without matching and dispatch log.
+Attribution-ready
+Every donation should know the source: direct, campaign, fundraiser, QR, agency, telecaller, manual entry.
+Manual donation entry must include source and optional fundraiser selection.
+Audit-ready
+Exports, edits, imports, certificate sends, manual matches and financial actions must be logged.
+No silent edits for compliance/financial data.
+Dynamic and simple
+Masters, menus, templates, bank accounts, donor types and alerts should be configurable.
+Avoid hard-coded names and one-off screens.
+Developer independence
+Developers must not need founder explanations for fields and workflows.
+Every module must contain fields, validations, buttons, statuses and edge cases.
+[Heading1] 2. System Architecture and Repository/File Structure
+Recommended implementation is a modular monolith at first, designed so modules can later be split if scale demands. Do not over-engineer microservices in the first build unless the team has dedicated DevOps and QA maturity.
+[Heading2] 2.1 High-Level Connectivity Map
+[CodeBlock] React Admin UI / Donor Portal / Public Campaign Pages
+[CodeBlock]         |
+[CodeBlock]         v
+[CodeBlock] Spring Boot API Layer
+[CodeBlock]         |-- Auth & Role Service
+[CodeBlock]         |-- Donor CRM Service
+[CodeBlock]         |-- Donation Service
+[CodeBlock]         |-- Receipt / PDF Service
+[CodeBlock]         |-- 10BD / 10BE Compliance Service
+[CodeBlock]         |-- Fundraiser Attribution Service
+[CodeBlock]         |-- Report Builder Service
+[CodeBlock]         |-- Communication Queue Service
+[CodeBlock]         |-- Export Job Service
+[CodeBlock]         |-- Audit Log Service
+[CodeBlock]         |
+[CodeBlock]         v
+[CodeBlock] Database + Object Storage + Email/WhatsApp Providers + Payment Gateway
+[Heading2] 2.2 Backend File/Package Structure
+Package / Folder
+Purpose
+Example files
+com.govindani.ngoos.auth
+Login, OTP, JWT, password reset, role checks
+AuthController.java, JwtService.java, OtpService.java, PermissionEvaluator.java
+com.govindani.ngoos.tenant
+NGO tenant setup, branch, settings, feature toggles
+TenantController.java, TenantSettingsService.java
+com.govindani.ngoos.donor
+Donor master, donor profile, donor type forms, donor lifecycle
+DonorController.java, DonorService.java, DonorRepository.java
+com.govindani.ngoos.donation
+Donation creation, manual/offline donations, recurring, receipts
+DonationController.java, DonationService.java, DonationValidator.java
+com.govindani.ngoos.bank
+Bank account masters, manual donation account mapping, reconciliation
+BankAccountController.java, ReconciliationService.java
+com.govindani.ngoos.compliance
+80G, 10BD export, 10BE import, FCRA, NVD/data validation
+ComplianceController.java, TenBdExportService.java, TenBeImportService.java
+com.govindani.ngoos.fundraiser
+Fundraisers, tracking links, QR links, commission ledger
+FundraiserController.java, TrackingLinkService.java, CommissionLedgerService.java
+com.govindani.ngoos.communication
+Email, WhatsApp, templates, delivery logs, retries
+EmailService.java, WhatsAppService.java, TemplateService.java
+com.govindani.ngoos.report
+Advanced AND/OR filters, scheduled reports, exports
+ReportBuilderController.java, ExportJobService.java
+com.govindani.ngoos.ca
+CA/auditor dashboards and read-only compliance reports
+CaDashboardController.java
+com.govindani.ngoos.audit
+Append-only audit log and compliance activity trail
+AuditLogService.java, AuditAspect.java
+com.govindani.ngoos.storage
+Object storage for PDFs, ZIPs, exports, certificates
+StorageService.java, SignedUrlService.java
+com.govindani.ngoos.config
+Security, CORS, scheduler, queue, object mapper
+SecurityConfig.java, SchedulerConfig.java
+[Heading2] 2.3 Frontend File/Folder Structure
+Folder
+Purpose
+Important screens/components
+src/app
+App shell, router, layout guards
+AppRouter.tsx, AuthGuard.tsx, RoleGuard.tsx
+src/modules/donors
+Donor list, donor profile, donor forms, donor alerts
+DonorListPage.tsx, DonorProfilePage.tsx, DonorFormDrawer.tsx
+src/modules/donations
+Record donation, donation list, receipt actions
+DonationListPage.tsx, ManualDonationModal.tsx
+src/modules/compliance
+80G, 10BD, 10BE, imports, validation dashboard
+TenBdExportPage.tsx, TenBeImportPage.tsx
+src/modules/fundraising
+Campaigns, fundraisers, links, QR, performance
+FundraiserDashboard.tsx, TrackingLinksPage.tsx
+src/modules/reports
+Report builder, saved filters, scheduled exports
+ReportBuilderPage.tsx, SavedSegmentsPage.tsx
+src/modules/communication
+Templates, email/WhatsApp logs, bulk sends
+TemplateEditor.tsx, DispatchLogsPage.tsx
+src/modules/accounts
+Bank ledgers, reconciliation, manual entries
+BankAccountsPage.tsx, ReconciliationPage.tsx
+src/modules/settings
+Users, roles, masters, feature toggles
+RolePermissionPage.tsx, MasterSettingsPage.tsx
+src/components/shared
+Reusable UI components
+DataTable.tsx, FilterBuilder.tsx, StatusBadge.tsx, ConfirmDialog.tsx
+[Heading1] 3. Roles, Permissions and Data-Access Model
+Permissions must be action-based, not just role-name based. Each role can be customized by the Super Admin. Exporting PAN/compliance data is separate from viewing normal donor profile data.
+Role
+Allowed
+Blocked by default
+Sensitive permissions
+Super Admin
+Full system settings, users, roles, all exports, deletion/restore, feature toggles
+None except irreversible deletion should still require confirmation
+Can grant PAN export, 10BD export, manual match, audit view
+Admin
+Donors, donations, campaigns, communication, normal reports
+Role management, global settings unless granted
+Can be customized by Super Admin
+Accounts
+Donation ledger, bank mapping, reconciliation, receipts, finance exports
+Certificate manual match, role settings, donor deletion
+May export financial reports but not PAN unless granted
+Compliance Officer
+80G, 10BD, 10BE, FCRA, missing data recovery, certificate dispatch
+General system settings, salary settings
+Can export PAN/compliance only if permission enabled
+CA / Auditor
+Read-only compliance, donation register, CA exports, reconciliation reports
+Edit/delete/send unless explicitly granted
+Read-only access to compliance exports
+Fundraiser
+Own dashboard, own tracking links, own raised amount
+All donor database and exports
+Only own attributed donor summary if allowed
+Telecaller
+Assigned leads, call notes, follow-up, limited donor creation
+Compliance exports, PAN export, financial reports
+No bulk export
+Donor
+Own dashboard, receipts, annual statements, profile update
+Admin data, other donor data
+Passwordless update link can allow limited fields only
+[Heading2] 3.1 Permission Keys Developers Must Implement
+Permission key
+Meaning
+DONOR_VIEW
+View donor list and donor profile
+DONOR_CREATE
+Create donor
+DONOR_EDIT
+Edit donor fields
+DONOR_EXPORT
+Export donor list without sensitive PAN fields
+DONOR_PAN_EXPORT
+Export PAN and compliance data
+DONATION_RECORD
+Record donation
+DONATION_EDIT
+Edit donation with audit log
+DONATION_RECEIPT_DOWNLOAD
+Download receipts
+COMPLIANCE_10BD_EXPORT
+Generate 10BD export
+COMPLIANCE_10BE_IMPORT
+Import 10BE ZIP/PDF/Excel
+COMPLIANCE_MANUAL_MATCH
+Manual match imported 10BE certificate
+COMPLIANCE_CERTIFICATE_SEND
+Send/resend 10BE/80G certificates
+FUNDRAISER_MANAGE
+Create fundraisers and tracking links
+REPORT_BUILDER_ACCESS
+Use AND/OR report builder
+BANK_ACCOUNT_MANAGE
+Add/edit NGO bank accounts
+AUDIT_VIEW
+View audit logs
+USER_MANAGE
+Create/edit users and roles
+[Heading1] 4. Navigation, Menus and Dashboard Architecture
+Sidebar must stay clean. Do not create a new top-level menu for every feature. Use 8 primary modules only; sub-features live inside tabs, filters, drawers and action menus.
+Primary menu
+Sub-menus / tabs
+Purpose
+Home
+Executive dashboard, alerts, compliance countdown, top donors, fundraiser leaderboard
+Daily operational overview
+Donors
+Donor master, donor profile, documents, compliance status, communication timeline
+Single source of truth for donors
+Donations
+Record donation, donation list, recurring, manual/offline, receipts, refunds
+All donation operations
+Compliance
+80G, 10BD, 10BE, FCRA, NVD/data validation, missing PAN/address recovery
+Tax and government filing workflows
+Fundraising
+Campaigns, causes, fundraisers, tracking links, QR links, attribution, payout ledger
+Donation source tracking and performance
+Communication
+Email, WhatsApp, SMS, templates, send logs, failed deliveries
+All outbound communication
+Analytics
+Report builder, donor intelligence, saved filters, CA reports, exports
+Decision-making layer
+Settings
+Users, roles, bank accounts, masters, templates, feature toggles, audit logs
+Configuration and governance
+[Heading2] 4.1 Home Dashboard Widgets
+Widget
+Logic
+Click behaviour
+Today Collection
+Sum successful donations today
+Open Donations filtered by today
+Month Collection
+Sum successful donations this month
+Open donation report filtered by month
+Current FY Collection
+Sum current financial year donations
+Open FY summary
+Missing PAN Count
+Donors/donations eligible for compliance but missing PAN
+Open PAN recovery list
+Missing Address Count
+Donors missing address/city/state/country
+Open address recovery list
+10BD Ready
+Eligible donations with required data complete
+Open 10BD export preparation
+10BE Pending Dispatch
+Imported and matched certificates not sent
+Open certificate dispatch queue
+Failed Emails
+Email sends with bounced/failed/rejected status
+Open communication failure log
+WhatsApp Failed
+WhatsApp sends failed after retry
+Open WhatsApp log
+Top Fundraiser
+Fundraiser with highest amount in selected period
+Open fundraiser dashboard
+Recurring Donor Drop Alert
+Recurring donors whose latest payment failed or stopped
+Open donor intelligence saved filter
+Compliance Deadline
+10BD/10BE due-date countdown
+Open compliance calendar
+[Heading1] 5. Donor Master Engine with Dynamic Donor-Type Forms
+Donor creation form must change dynamically based on donor type. Do not force corporate donors into individual donor fields. Donor type drives fields, validations, certificate labels, compliance reports and CSR/FCRA handling.
+[Heading2] 5.1 Donor Types
+Donor type
+When used
+Form behaviour
+Individual
+Normal person donating from personal account
+Individual KYC and personal contact fields
+Corporate / Company
+Company or CSR source donating from corporate account
+Company profile + contact person + GST/CIN/CSR fields
+Trust / NGO / Institution
+Another organization donating or contributing
+Registration/12A/80G status + authorized contact
+Foreign donor
+Donor outside India or foreign contribution case
+Country/passport/TIN/FCRA fields and FCRA account mapping
+Anonymous donor
+Donor does not want public name shown
+Internal identity still stored where payment/compliance requires
+Government / Agency
+Government or institutional grants/donations
+Department, sanction order and grant file fields
+[Heading2] 5.2 Individual Donor Form
+Field
+Type
+Required
+Validation / behaviour
+Donor Code
+Auto text
+Auto
+Format DR-000001; immutable after creation
+Full Name
+Text
+Yes
+Minimum 2 characters; title case display optional
+Mobile
+Phone
+Yes
+10 digit India normalization; duplicate warning
+Email
+Email
+Recommended
+Required for certificate email dispatch; duplicate warning
+PAN
+Text
+Conditional
+ABCDE1234F format; uppercase; required for 80G/10BD readiness
+Aadhaar Last 4
+Text
+Optional
+Only last 4 digits; never force full Aadhaar
+Address Line 1
+Text
+Conditional
+Required for compliance-ready status
+City
+Text/dropdown
+Conditional
+Required for compliance-ready status
+State
+Dropdown
+Conditional
+Required for compliance-ready status
+Country
+Dropdown
+Yes
+Default India
+Pin Code
+Text
+Optional
+6 digit for India
+Date of Birth
+Date
+Optional
+For relationship management
+Occupation
+Text
+Optional
+Donor intelligence
+Preferred Communication
+Dropdown
+Optional
+Email / WhatsApp / SMS / Call
+Communication Consent
+Checkbox
+Yes
+Separate consent per channel
+[Heading2] 5.3 Corporate / Organization Donor Form
+Field
+Type
+Required
+Validation / behaviour
+Organization Name
+Text
+Yes
+Primary display name for corporate donor
+Organization Type
+Dropdown
+Yes
+Company / CSR / Foundation / Trust / Society / Government / Other
+PAN
+Text
+Conditional
+Required for compliance reports if applicable
+GST Number
+Text
+Optional
+GSTIN format validation if entered
+CIN / Registration No.
+Text
+Optional
+For company and institution records
+CSR Contact Person
+Text
+Yes
+Main relationship owner at company
+CSR Contact Designation
+Text
+Optional
+CSR Head / HR / Founder / Manager
+Accounts Contact
+Text
+Optional
+Finance/accounting person
+Email
+Email
+Yes
+Used for receipts and annual statements
+Mobile
+Phone
+Yes
+Normalized and duplicate warning
+Registered Address
+Textarea
+Conditional
+Required for compliance-ready status
+Website
+URL
+Optional
+Corporate profile enrichment
+Industry
+Dropdown/Text
+Optional
+CSR segmentation
+CSR Budget Estimate
+Number
+Optional
+For CSR pipeline only
+Agreement Documents
+File upload
+Optional
+PDF/JPG with secure storage
+[Heading2] 5.4 Donor Profile Tabs
+Tab
+Information shown
+Important buttons
+Overview
+Donor identity, donor score, lifecycle, total giving, FY giving, profile completion, red alerts
+Edit Profile, Request Missing Data
+Donations
+All donations with receipts, campaign, fundraiser, bank account, payment mode
+Record Donation, Download Receipt, Export
+Compliance
+80G status, 10BD readiness, 10BE coverage, PAN/address flags, FCRA flag
+Generate 80G, Mark Ready, Request PAN/Address
+Annual Statements
+FY-wise consolidated receipts and annual PDFs
+Generate Annual Receipt, Download, Send Email/WhatsApp
+Communication
+Email, WhatsApp, SMS, calls, templates and delivery state
+Send Message, View Logs
+Fundraiser Attribution
+Which fundraiser/source brought donor and donation history
+View Attribution
+Documents
+PAN, registration proof, agreements, certificate files
+Upload, Download, Replace
+Audit
+Every edit, send, export, import, manual match
+View audit details
+[Heading1] 6. Donation Management and Manual Donation Workflow
+Donation entry must support online gateway donations, QR donations, recurring donations, product/cause donations and manual offline entries. Manual donation entry is critical because many NGOs receive cash, cheque, bank transfer and UPI outside the website.
+[Heading2] 6.1 Donation Fields
+Field
+Type
+Required
+Rules
+Donation ID
+Auto
+Auto
+Unique internal ID
+Receipt Number
+Auto/manual pattern
+Auto
+Generated after successful/approved donation
+Donor
+Search/select/create
+Yes
+Existing donor or create donor from modal
+Donor Type
+Auto from donor
+Yes
+Individual/Corporate/Organization/Foreign etc.
+Donation Date
+Date
+Yes
+Backdated only if role permission allows
+Financial Year
+Auto
+Auto
+Based on donation date
+Campaign/Cause
+Dropdown
+Yes
+General donation allowed if configured
+Donation Product/Goal
+Dropdown
+Optional
+For product/goal-based campaigns
+Amount
+Currency
+Yes
+Greater than zero
+Payment Mode
+Dropdown
+Yes
+Cash/Cheque/Bank/UPI/Gateway/QR
+Bank Account Received In
+Dropdown
+Yes for manual/offline
+Admin-configured bank/cash account
+Transaction Reference
+Text
+Conditional
+Required for bank/UPI/gateway
+Cheque Number
+Text
+Conditional
+Required for cheque
+Deposit Date
+Date
+Conditional
+For manual donation reconciliation
+Fundraiser
+Dropdown
+Optional
+Selected by manual-entry person if applicable
+Telecaller
+Dropdown
+Optional
+Selected if telecaller influenced donation
+Source Type
+Dropdown
+Yes
+Direct/Fundraiser/QR/Event/Agency/Telecaller/Manual
+80G Eligible
+Checkbox/auto
+Yes
+Driven by cause/category and donor data
+FCRA Flag
+Auto/manual
+Conditional
+If foreign donor/FCRA enabled
+Notes
+Textarea
+Optional
+Internal only unless marked public
+[Heading2] 6.2 Manual Donation Save Behaviour
+[ListNumber] Admin clicks Donations > Record Donation.
+[ListNumber] Admin searches donor; if donor does not exist, creates donor using dynamic donor-type form.
+[ListNumber] Admin enters amount, date, cause, payment mode and bank account received in.
+[ListNumber] If donation is via bank/UPI/cheque, system requires reference number or cheque details.
+[ListNumber] Admin optionally selects fundraiser, agency, telecaller or source.
+[ListNumber] System validates missing PAN/address for compliance status but should not block donation creation unless organization rule says so.
+[ListNumber] System stores donation, creates audit log, updates donor totals and fundraiser attribution.
+[ListNumber] If 80G eligible, receipt is generated or queued.
+[ListNumber] Donation enters 10BD readiness queue based on PAN/address/email/data status.
+[Heading1] 7. Bank Account Mapping and Reconciliation Layer
+Every offline/manual donation must be mapped to a receiving account. Without this, accounting and CA reconciliation will become fake confidence.
+Bank account master field
+Type
+Required
+Behaviour
+Account Name
+Text
+Yes
+Example: HDFC Main Donation Account
+Bank Name
+Text
+Yes
+Bank display name
+Account Number Masked
+Text
+Yes
+Store full only where required; mask in UI
+IFSC
+Text
+Conditional
+For bank account
+Account Type
+Dropdown
+Yes
+Savings/Current/FCRA/Cash/Cheque Collection/UPI
+Purpose
+Dropdown
+Yes
+General/Corpus/FCRA/CSR/Project/Cash
+Opening Balance
+Currency
+Optional
+For ledger view
+Status
+Toggle
+Yes
+Active/Inactive
+Default For
+Dropdown
+Optional
+Default donation type/cause
+Created By
+Auto
+Auto
+Audit
+Updated By
+Auto
+Auto
+Audit
+[Heading2] 7.1 Reconciliation Status Values
+Status
+Meaning
+Action required
+Unreconciled
+Donation entered but not matched with bank statement
+Accounts must verify
+Partially Reconciled
+Amount/date mismatch or partial payment
+Manual check
+Reconciled
+Bank record verified
+No action
+Disputed
+Mismatch or suspected wrong entry
+Admin/accounts resolution
+Reversed
+Payment reversed/refunded
+Adjustment entry required
+[Heading1] 8. 80G Compliance and Receipt Engine
+Component
+Requirement
+Receipt generation
+Generate PDF after eligible successful/approved donation
+Receipt immutability
+Generated receipt values must not change if donor profile is edited later; store donation-time snapshot
+Bulk download
+Admin can download receipts for selected filters
+Email dispatch
+Send receipt by email if donor email exists
+WhatsApp dispatch
+Optional template with secure receipt link
+Eligibility
+Driven by donation category, NGO 80G status and donor data
+Audit
+Log receipt generation, download, send, resend and manual correction
+[Heading1] 9. 10BD Export Exact Format and CA/Government Filing Pack
+This section freezes the required 10BD export columns for CA/government filing preparation. Final government utility column names may change by year; therefore the system must allow template mapping while preserving these internal columns.
+Column
+Meaning
+Developer rule
+Sr_No
+Serial number in export batch
+Auto running sequence
+Batch_ID
+Internal 10BD export batch ID
+Generated on export
+Financial_Year
+Financial year of donation
+Example 2026-2027
+Assessment_Year
+Assessment year if required by CA template
+Example 2027-2028
+Tenant_NGO_Code
+Internal NGO/tenant ID
+For SaaS/multi-NGO system
+Donor_Code
+Internal donor code
+DR-000001
+Donor_Type
+Individual/Corporate/Trust/Foreign/Government
+From donor profile
+ID_Proof_Type
+PAN/Aadhaar/Passport/DL/TIN/Other
+PAN preferred
+PAN
+Donor PAN
+ABCDE1234F format; blank goes to missing-data queue
+Aadhaar_Last_4
+Masked Aadhaar / last 4 only
+Do not expose full Aadhaar unless legally required
+Passport_No
+Passport number for foreign donor
+Conditional
+Driving_Licence_No
+Driving licence if used as ID
+Conditional
+TIN_or_Foreign_Tax_ID
+Foreign donor tax ID
+FCRA/foreign donor conditional
+Name_of_Donor
+Donor legal name
+For corporate, organization name
+Contact_Person
+For organization/corporate donor
+Conditional
+Email
+Donor email
+Needed for certificate dispatch
+Mobile
+Donor mobile
+Needed for WhatsApp/SMS
+Address_Line_1
+Address
+Compliance readiness field
+Address_Line_2
+Address optional
+Optional
+City
+City
+Compliance readiness field
+State
+State
+Compliance readiness field
+Country
+Country
+India default
+Pin_Code
+Postal code
+Optional/conditional
+Donation_Category
+Corpus/General/Education/Medical/Annadanam/CSR etc.
+From donation/campaign
+Donation_Mode
+Cash/Cheque/UPI/Bank/Gateway/QR
+From donation
+Donation_Amount
+Eligible donation amount
+Sum based on donor/year export rule
+Receipt_Number
+Receipt/reference number
+All included receipts; if multiple, comma-separated or child sheet
+Receipt_Date
+Donation/receipt date
+Date format configurable
+Transaction_Reference
+Bank/UPI/gateway reference
+For traceability
+Bank_Account_Received_In
+Receiving account
+Manual donation bank mapping
+FCRA_Status
+Domestic/FCRA/Foreign/Not Applicable
+Feature toggle controlled
+Fundraiser_Source
+Fundraiser/agency/telecaller/source
+Attribution
+Validation_Status
+Valid/Missing PAN/Missing Address/Manual Review/Duplicate
+Computed by validation engine
+10BD_Inclusion_Status
+Included/Excluded/On Hold
+Batch decision
+Remarks
+CA/admin remarks
+Free text
+[Heading2] 9.1 10BD Export Workflow
+[ListNumber] Admin/Compliance Officer selects financial year.
+[ListNumber] System runs validation: PAN, donor type, address, amount, FCRA flag, duplicate donor, receipt coverage.
+[ListNumber] Invalid records appear in Missing Data tab with exact reason.
+[ListNumber] Admin can export only valid rows or export with validation remarks based on policy.
+[ListNumber] System creates a batch ID and freezes row snapshot.
+[ListNumber] Generated files include Excel, CSV, PDF summary and audit log.
+[ListNumber] Only roles with COMPLIANCE_10BD_EXPORT and DONOR_PAN_EXPORT may download full PAN data.
+[Heading2] 9.2 10BD Export Package File Names
+File name
+Purpose
+10BD_FY_2026_2027_BATCH_001.xlsx
+Main CA/government filing Excel
+10BD_FY_2026_2027_BATCH_001.csv
+CSV backup/import-friendly format
+10BD_FY_2026_2027_BATCH_001_AUDIT_SUMMARY.pdf
+Human-readable summary: totals, row count, exported by, filters
+10BD_FY_2026_2027_BATCH_001_VALIDATION_ERRORS.xlsx
+Rows excluded/missing PAN/address/duplicates/manual review
+10BD_FY_2026_2027_BATCH_001_MANIFEST.json
+Technical manifest with checksum, timestamp, filters, row count
+[Heading1] 10. 10BE Import, ZIP Processing and Certificate Dispatch
+10BE certificate delivery must be handled through a controlled import-match-approve-dispatch workflow. Certificate sending happens by email and WhatsApp integration. Email is mandatory; WhatsApp is optional/configurable.
+[Heading2] 10.1 Sample 10BE Import ZIP for Testing
+Sample file/folder
+Description
+10BE_FY_2026_2027_BATCH_001.zip
+ZIP package uploaded by admin for import testing
+/certificates/10BE_PAN_ABCDE1234F_001.pdf
+Sample donor 10BE certificate PDF
+/certificates/10BE_PAN_XYZAB9876P_002.pdf
+Sample donor 10BE certificate PDF
+/certificates/10BE_PAN_AAAAA1111A_003.pdf
+Sample donor 10BE certificate PDF
+/donor_mapping.xlsx
+Optional mapping file used for matching PAN/name/certificate amount
+/import_summary.xlsx
+Optional import summary received/prepared by CA/admin
+/manifest.json
+Optional internal manifest created after system processing
+[Heading2] 10.2 donor_mapping.xlsx Required Columns
+Column
+Meaning
+PAN
+Primary match key
+Donor_Name
+Name printed on 10BE
+Financial_Year
+FY covered
+Assessment_Year
+AY if present
+Certificate_Number
+Government certificate number
+Acknowledgement_Number
+Government acknowledgement/reference
+Donation_Amount
+Donation total considered
+Covered_Amount
+Amount covered by certificate
+Certificate_File_Name
+PDF file name inside ZIP
+Email
+Optional supporting match
+Mobile
+Optional supporting match
+Remarks
+CA/admin note
+[Heading2] 10.3 10BE Matching Rules
+Match condition
+Score
+Decision
+PAN + FY + covered amount matches donor-year total
+100
+Auto-match allowed
+PAN + receipt number / donor code from mapping
+98
+Auto-match allowed
+PAN + donor name + FY
+95
+Auto-match allowed if no duplicate PAN conflict
+Email + PAN
+92
+Auto-match if amount not conflicting
+Name + amount + FY
+80
+Manual review required
+Name only
+40
+Never auto-send
+Amount only
+10
+Ignore/no match
+[Heading2] 10.4 Certificate Dispatch Rules
+Channel
+Rule
+Tracking required
+Email
+Mandatory supported channel. Send certificate attachment or secure download link.
+Sent, delivered if available, bounced, opened/clicked if provider supports, failed, retry count
+WhatsApp
+Optional integration with approved template and secure certificate link.
+Sent, delivered, read, failed, retry count, template ID
+Donor Dashboard
+Certificate available in donor dashboard after approval and match.
+Download timestamp and user/IP/device log
+Manual download
+Compliance/admin can download certificate for support.
+Audit log required
+[Heading1] 11. PAN and Address Compliance Recovery Engine
+NGOs lose time every year because donor PAN/address data is incomplete. The system must give one-click recovery workflows instead of manual calling and spreadsheet chaos.
+Dashboard bucket
+Filter logic
+Bulk action
+PAN Missing
+Compliance-eligible donations where donor PAN is blank/invalid
+Send PAN request email/WhatsApp/SMS
+Address Missing
+Address/city/state/country missing
+Send address request link
+Email Missing
+Email blank but mobile exists
+Send WhatsApp/SMS asking for email
+Mobile Missing
+Mobile blank but email exists
+Send email asking for mobile
+Ready for 10BD
+PAN + address + amount + email/mobile valid
+Include in export
+Manual Review
+Duplicate PAN/name mismatch/amount conflict
+Assign to compliance officer
+10BE Pending
+10BD exported but 10BE not imported/matched
+Show certificate pending queue
+[Heading2] 11.1 Passwordless Donor Update Link
+[ListNumber] Admin selects donors missing PAN/address.
+[ListNumber] System creates secure token link per donor: /donor/update-info/{token}.
+[ListNumber] Token can expire in 7/15/custom days.
+[ListNumber] Donor opens link without full login.
+[ListNumber] Donor sees only allowed fields: PAN, address, city, state, country, email/mobile if missing.
+[ListNumber] Donor submits form.
+[ListNumber] System validates PAN format and address fields.
+[ListNumber] System updates donor profile, marks recovery status complete, logs token use and redirects to thank-you page.
+[Heading2] 11.2 Reminder Automation
+Reminder attempt
+Timing
+Channel
+Message purpose
+Attempt 1
+Immediately after campaign
+Email + WhatsApp
+Request missing PAN/address
+Attempt 2
+3 days later
+Email + WhatsApp
+Reminder with compliance deadline context
+Attempt 3
+7 days later
+Email + WhatsApp/SMS
+Final reminder before 10BD preparation
+Attempt 4
+Configurable until filled
+Optional
+System continues until data received or max attempts reached
+[Heading1] 12. Donor Dashboard and Compliance Alerts
+Widget / section
+Purpose
+Buttons
+Profile Completion
+Shows % complete for PAN/address/email/mobile
+Update Profile
+Red Alert: PAN Missing
+Shown when PAN is missing and donations are 80G/10BD eligible
+Submit PAN
+Red Alert: Address Missing
+Shown when address is incomplete
+Submit Address
+Donation History
+All one-time, recurring, manual and campaign donations
+Download Receipt
+Annual Statement
+FY-wise consolidated receipt
+Download Annual PDF
+80G Certificates
+Donation-level 80G receipts/certificates
+Download/Email
+10BE Certificates
+Imported and matched certificates
+Download/Email/WhatsApp if enabled
+Recurring Donations
+Subscription history and failed payment alerts
+Manage/Cancel if supported
+Communication Preferences
+Channel consent controls
+Update Preferences
+[Heading1] 13. Annual Consolidated Receipt Engine
+If a donor donates 8-10 times in a financial year, system should generate one consolidated annual PDF with every transaction, receipt number, amount, campaign and payment reference.
+Annual receipt field
+Rule
+Donor Name
+From donor profile snapshot
+PAN
+Masked in UI, full in PDF only if permitted
+Address
+Current compliance address or donation-time address as policy
+Financial Year
+Selected FY
+Donation Date
+Each donation row
+Receipt Number
+Each donation receipt
+Campaign/Cause
+Each donation cause
+Amount
+Each donation amount
+Payment Mode
+UPI/Cheque/Gateway/Cash/Bank
+Transaction ID
+Payment reference
+80G Eligibility
+Donation-level status
+Total Annual Donation
+Sum of rows included
+Generated At
+Timestamp
+Generated By
+System/admin/donor action
+[Heading2] 13.1 Annual Receipt Buttons
+Button
+Where shown
+Behaviour
+Generate Annual Receipt
+Donor profile, donor dashboard, annual reports
+Creates FY PDF and stores immutable version
+Download Annual Receipt
+Donor dashboard/admin
+Downloads generated PDF
+Send Annual Receipt Email
+Admin/donor dashboard
+Sends PDF/link by email
+Send Annual Receipt WhatsApp
+Admin if WhatsApp enabled
+Sends template with secure link
+Regenerate With Latest Data
+Admin only
+Creates new version, keeps old version log
+[Heading1] 14. Donor Intelligence, NDI Scoring and Advanced Report Builder
+The system must not only store data; it must tell the NGO who needs attention. NDI here means NGO Donor Intelligence: scoring, filtering, red alerts, saved segments and action triggers.
+[Heading2] 14.1 Donor Score Formula
+Suggested formula: Donor Score = (Lifetime Value Score x 0.30) + (Frequency Score x 0.20) + (Recency Score x 0.20) + (Recurring Score x 0.10) + (Profile Completion Score x 0.10) + (Engagement Score x 0.10). All weights must be configurable.
+Score range
+Category
+Recommended action
+90-100
+Major Donor
+Personal call, CSR discussion, annual impact report
+70-89
+High Value
+Priority campaign updates and relationship nurturing
+50-69
+Active Donor
+Regular campaign communication
+20-49
+Occasional Donor
+Reactivation campaigns
+0-19
+Lapsed / Weak
+Low-cost reactivation or cleanup
+[Heading2] 14.2 Advanced AND/OR Filter Builder
+Filter field
+Operators
+Example
+Donation Amount
+>, <, =, between
+Donation Amount > 5000
+Last Donation Date
+before/after/between/no donation in days
+No donation in last 90 days
+Lifetime Donation
+>, <, between
+Lifetime > 50000
+Recurring Status
+is/is not
+Recurring donor with failed payment
+PAN Status
+available/missing/invalid
+PAN missing
+Address Status
+complete/incomplete
+Address missing
+Email Delivery
+sent/delivered/bounced/opened/clicked/failed
+10BE email failed
+WhatsApp Delivery
+sent/delivered/read/failed
+PAN request failed
+Fundraiser
+equals/in list
+Fundraiser Ravi
+Campaign
+equals/in list
+Education Campaign
+Donor Type
+Individual/Corporate/Foreign/Trust
+Corporate donor
+FCRA Status
+Domestic/FCRA/Foreign
+FCRA donor
+City/State/Country
+equals/contains/in list
+City = Bhopal
+[Heading2] 14.3 Saved Intelligence Filters
+[ListBullet] Donated more than Rs. 5,000 AND not donated in last 90 days
+[ListBullet] Recurring donor AND payment failed
+[ListBullet] Lifetime donation above Rs. 50,000
+[ListBullet] Donated in FY 2025-26 but not FY 2026-27
+[ListBullet] Corporate donor AND no CSR follow-up in 60 days
+[ListBullet] Received 10BE but email not delivered
+[ListBullet] Top 100 donors by lifetime value
+[ListBullet] Donors with missing PAN
+[ListBullet] Donors with pending compliance review
+[ListBullet] Fundraiser donors with conversion rate above configured percentage
+[ListBullet] Small amount but high frequency donors
+[ListBullet] Large one-time donors with no second donation
+[Heading1] 15. Fundraiser ERP, Tracking Links and Informational Commission Ledger
+Fundraiser payout is informational only. The system calculates what may be payable but does not automatically release payment. Manual payout entries are recorded in ledger.
+Fundraiser profile field
+Rule
+Fundraiser Name
+Required
+Type
+Individual/Agency/Volunteer/CSR Partner/Telecaller/Influencer
+Mobile/Email
+Required for communication
+Commission %
+Fundraiser-wise configurable
+Start Date
+Optional
+Agreement Upload
+Optional
+Status
+Active/Paused/Closed
+Assigned Campaigns
+Multi-select
+Notes
+Internal
+[Heading2] 15.1 Tracking Link Behaviour
+[ListNumber] Admin creates a cause/campaign once.
+[ListNumber] Admin clicks Create Tracking Link.
+[ListNumber] Admin selects fundraiser/agency/source.
+[ListNumber] System generates unique URL and QR code without duplicating the cause.
+[ListNumber] Every visit stores source, device, UTM and timestamp.
+[ListNumber] Every donation from the link stores tracking_id and fundraiser_id.
+[ListNumber] Fundraiser dashboard updates total raised, donor count, repeat donors and conversion.
+[Heading2] 15.2 Commission Ledger Columns
+Column
+Meaning
+Fundraiser Name
+Who raised the donation
+Campaign
+Campaign/cause
+Total Raised
+Sum of attributed successful donations
+Commission %
+Fundraiser-wise configured rate
+Commission Amount
+Total Raised x Commission %
+Paid Amount
+Manual payout recorded by accounts
+Pending Amount
+Commission Amount - Paid Amount
+Last Payment Date
+Last manual payout entry
+Payment Notes
+Manual remarks
+Status
+Pending/Partially Paid/Paid/Hold
+[Heading1] 16. Communication Hub: Email, WhatsApp, Templates and Deliverability Reports
+Every communication must be logged. Emails going to spam may not be fully trackable unless the email provider returns such events; however bounces, rejections, opens, clicks and failures should be captured where provider supports tracking.
+[Heading2] 16.1 Email Tracking Statuses
+Status
+Meaning
+Queued
+Message created but not sent yet
+Sent
+Sent to provider
+Delivered
+Provider reports delivery
+Opened
+Tracking pixel/open event if supported
+Clicked
+Donor clicked link
+Bounced
+Email bounced
+Rejected
+Provider rejected
+Spam/Complaint
+Provider reports spam complaint if available
+Failed
+Send failed after retry
+Unsubscribed
+Donor opted out of marketing messages
+[Heading2] 16.2 WhatsApp Templates
+Template
+Purpose
+Variables
+Donation Thank You
+After donation success
+donor_name, amount, receipt_url
+80G Receipt
+Receipt/certificate delivery
+donor_name, receipt_no, receipt_url
+10BE Certificate
+Certificate availability
+donor_name, fy, certificate_url
+PAN Request
+Missing PAN recovery
+donor_name, update_link, deadline_days
+Address Request
+Missing address recovery
+donor_name, update_link
+Annual Receipt
+Annual consolidated receipt ready
+donor_name, fy, annual_receipt_url
+Recurring Failed
+Recurring payment failed
+donor_name, retry_link
+Campaign Appeal
+Campaign request to opted-in donors
+donor_name, campaign_name, donation_link
+[Heading2] 16.3 Communication Report Columns
+Column
+Meaning
+Message ID
+Internal communication log ID
+Channel
+Email/WhatsApp/SMS
+Template Name
+Used template
+Donor
+Recipient donor
+Recipient Email/Phone
+Destination
+Related Entity
+Donation/Receipt/10BE/Campaign/PAN request
+Status
+Queued/Sent/Delivered/Failed/etc.
+Sent At
+Timestamp
+Delivered At
+Timestamp if available
+Opened/Read At
+Timestamp if available
+Clicked At
+Timestamp if link clicked
+Failure Reason
+Provider error/bounce reason
+Retry Count
+Number of attempts
+Sent By
+System/admin user
+[Heading1] 17. CA/Auditor Dashboard and Compliance Countdown Engine
+CA dashboard area
+What CA can see/download
+10BD Export Center
+Export batches, validation errors, donor-wise data
+10BE Import Center
+Import batches, matched/unmatched certificate summary
+Donation Register
+Donation ledger with filters
+80G Report
+Eligible donations and receipt status
+Annual Donor Summary
+FY-wise donor totals
+Bank Reconciliation
+Donation vs bank account mapping
+FCRA Report
+Foreign contribution if enabled
+Audit Logs
+Read-only compliance actions
+Data Quality Dashboard
+Missing PAN/address/email reports
+[Heading2] 17.1 Compliance Countdown Rules
+Alert
+Trigger
+Channels
+10BD filing due
+Configurable date - 30/15/7/3/1 days
+Dashboard, Email, WhatsApp to admin
+10BE dispatch pending
+Imported/matched but not sent
+Dashboard/email
+PAN missing deadline
+Before export preparation cutoff
+Dashboard/email/WhatsApp
+Address missing deadline
+Before export preparation cutoff
+Dashboard/email/WhatsApp
+FCRA report due
+If FCRA enabled
+Dashboard/email
+Annual receipt generation due
+FY end or configured date
+Dashboard/email
+[Heading1] 18. CSR, FCRA, NVD/Data Validation and Phase-Controlled Modules
+FCRA module is feature-controlled. If NGO does not have international/FCRA capability, the menu remains hidden. If enabled, FCRA donation forms, foreign donor profiles, FCRA account mapping and FCRA reports become available.
+Module
+Phase / toggle
+Fields / rules
+FCRA
+Feature toggle
+Foreign donor, country, passport/TIN, FCRA bank account, purpose, separated reports
+CSR
+Phase 2 unless included
+Company profile, CSR contact, proposal, agreement, project report, utilization certificate
+NVD / Data Validation Compliance
+Core validation layer
+Name, PAN, address, donor type, duplicate detection, compliance readiness score
+Grant Management
+Phase 2/3
+Grant proposal, deadline, funder, status, approved amount, utilization
+Beneficiary Management
+Phase 2
+Beneficiary profiles and impact reports if NGO requires
+[Heading1] 19. Accounts, Salary, Membership, Appointments, Interns and Volunteers
+Module
+Functions
+Important fields
+Accounts Ledger
+Manual entries, expenses, income, bank mapping, reconciliation
+ledger_id, account_id, date, type, amount, reference, status
+Salary Management
+Employee salary, intern stipend, payouts, approvals
+employee_id, month, base_salary, deductions, net_pay, paid_status
+Membership
+Registration, approval, membership fees, renewal, code verification
+member_id, type, fee, status, expiry, verification_code
+Appointments
+Booking, department selection, approval, reminders
+appointment_id, purpose, date, time, status, assigned_to
+Interns
+Intern login, tasks, attendance, approval, certificate
+intern_id, tasks, attendance_status, certificate_status
+Volunteers
+Volunteer registration, hours, events, certificate
+volunteer_id, skills, availability, hours_contributed
+[Heading1] 20. Database Architecture, Table List and Field Groups
+Below is the minimum table architecture. Exact column datatypes should be finalized during schema design, but developers must not omit the core entities.
+Table
+Purpose
+ngo_tenants
+NGO/tenant settings, branding, feature toggles
+users
+Admin/staff/donor users
+roles
+Role names
+permissions
+Action permissions
+role_permissions
+Role-permission mapping
+donors
+Master donor profile
+donor_documents
+PAN/agreements/registration docs
+donor_consents
+Email/WhatsApp/SMS consent history
+donations
+Donation transaction records
+donation_receipts
+80G and receipt PDFs
+bank_accounts
+NGO receiving accounts
+bank_reconciliation
+Manual/bank reconciliation records
+campaigns
+Causes/campaigns
+donation_products
+Goal/product asks inside campaigns
+recurring_donations
+Recurring mandate/subscription records
+fundraisers
+Fundraiser profiles
+fundraising_links
+Trackable links and QR codes
+fundraising_clicks
+Link/QR visits
+fundraising_attribution
+Donation attribution records
+fundraiser_commission_ledger
+Informational payout ledger
+tenbd_batches
+10BD export batches
+tenbd_rows
+Frozen donor rows included in export
+tenbe_import_batches
+10BE ZIP/import batches
+tenbe_certificates
+Imported certificate files and parsed metadata
+tenbe_matches
+Certificate-to-donor match results
+certificate_dispatch_logs
+Email/WhatsApp certificate sends
+compliance_validation_errors
+PAN/address/duplicate/manual review errors
+annual_receipts
+Annual consolidated receipt PDFs
+communication_templates
+Email/WhatsApp templates
+communication_logs
+Email/WhatsApp/SMS send logs
+report_definitions
+Saved AND/OR filters
+export_jobs
+Generated exports and retention
+audit_logs
+Append-only action logs
+appointments
+Appointment bookings
+memberships
+Membership records
+interns
+Intern records
+volunteers
+Volunteer records
+csr_profiles
+CSR/company profiles
+grants
+Grant proposals and tracking
+[Heading1] 21. API / Service Groups and Payload Behaviour
+API group
+Representative endpoints / actions
+Auth
+POST /auth/login-otp, POST /auth/verify-otp, POST /auth/login-password, POST /auth/password-reset
+Donors
+GET/POST/PUT /donors, GET /donors/{id}, POST /donors/missing-data-request
+Donations
+POST /donations/manual, POST /donations/intent, POST /donations/payment-callback, GET /donations
+Bank
+GET/POST /bank-accounts, POST /reconciliation/mark
+80G
+POST /receipts/generate, GET /receipts/{id}/download, POST /receipts/send
+10BD
+POST /compliance/10bd/validate, POST /compliance/10bd/export, GET /compliance/10bd/batches
+10BE
+POST /compliance/10be/import, GET /compliance/10be/matches, POST /compliance/10be/manual-match, POST /compliance/10be/send
+Fundraiser
+POST /fundraisers, POST /tracking-links, GET /fundraisers/{id}/performance
+Reports
+POST /reports/query, POST /reports/save, POST /exports/request, GET /exports/{id}/download
+Communication
+POST /templates, POST /messages/send, GET /communication/logs
+CA
+GET /ca/dashboard, GET /ca/reports/10bd, GET /ca/reports/reconciliation
+Audit
+GET /audit-logs with permission
+[Heading1] 22. Frontend Page Registry, Components and UI States
+Page
+URL
+Primary buttons
+Mandatory states
+Home Dashboard
+/admin/dashboard
+Refresh, View Alerts, Export Summary
+Loading, empty, permission denied
+Donor List
+/admin/donors
+Add Donor, Import, Export, Request PAN
+Loading, no donors, filter no result
+Donor Profile
+/admin/donors/{id}
+Edit, Record Donation, Send Message, Download Annual Receipt
+Missing PAN alert, missing address alert
+Record Donation
+/admin/donations/record
+Save Donation, Save & Generate Receipt, Cancel
+Validation errors, duplicate donor warning
+10BD Export
+/admin/compliance/10bd
+Run Validation, Export 10BD, Download Errors
+Invalid records, missing data, no eligible records
+10BE Import
+/admin/compliance/10be/import
+Upload ZIP, Process, Review Matches, Send Certificates
+Upload error, match review, dispatch failed
+Fundraiser Dashboard
+/admin/fundraising/fundraisers/{id}
+Create Link, Download QR, Export Performance
+No donations, paused link
+Report Builder
+/admin/analytics/report-builder
+Add Condition, Save Filter, Export, Schedule
+Invalid logic, empty result
+Communication Logs
+/admin/communication/logs
+Retry Failed, Export, View Template
+Provider failure, bounce
+Settings Users/Roles
+/admin/settings/users
+Add User, Disable, Assign Role
+Permission denied
+Donor Dashboard
+/donor/dashboard
+Update Profile, Download Receipts, Submit PAN
+Token expired, red alert missing data
+[Heading1] 23. Exports, PDF Generation, Retention and Object Storage
+Artifact
+Retention
+Storage rule
+Generated export files
+60 days active download
+Auto delete generated file after 60 days; keep audit log and allow regeneration if source data exists
+Donation records
+Permanent/statutory
+Never auto-delete
+Receipts and certificates
+Permanent/statutory
+Private object storage with signed URLs
+10BE uploaded ZIP
+As compliance archive policy; recommended long-term
+Store original ZIP, checksum, uploader, timestamp
+Audit logs
+Permanent/system retention
+Append-only
+Communication logs
+12-24 months minimum
+Operational logs with status
+[Heading1] 24. Notifications, Audit Logs, Security and Privacy
+Action
+Audit log required
+Donor created/edited
+Yes
+Donation created/edited/deleted/voided
+Yes
+Receipt generated/downloaded/sent
+Yes
+10BD validation/export
+Yes
+10BE ZIP upload/process/manual match/send
+Yes
+PAN/address update by passwordless link
+Yes
+Fundraiser commission manual payment entry
+Yes
+Bank account added/edited
+Yes
+Export downloaded
+Yes with filters and row count
+Role/permission changed
+Yes
+[Heading2] 24.1 Security Rules
+[ListBullet] PAN must be uppercase and masked where full value is not required.
+[ListBullet] Only authorized admin can export PAN/compliance data.
+[ListBullet] Passwordless update links must be tokenized, time-limited, single purpose and logged.
+[ListBullet] Generated PDF links must be signed/non-guessable.
+[ListBullet] Every API must enforce tenant isolation and permission checks.
+[ListBullet] File uploads must validate MIME/type/size and reject unsafe ZIP contents.
+[ListBullet] Manual match requires reason and audit log.
+[ListBullet] Delete should be soft delete for financial/compliance records.
+[Heading1] 25. QA Checklist, Acceptance Criteria and Edge Cases
+Test case
+Expected result
+Create individual donor with missing PAN
+Donor saves, but compliance status red/missing PAN
+Create corporate donor
+Corporate fields appear and individual DOB/occupation fields not forced
+Record manual donation
+Bank account received in is mandatory and stored
+Manual donation with fundraiser
+Attribution appears in fundraiser report
+10BD export with missing PAN donor
+Row flagged as missing data or excluded based on setting
+10BE ZIP import with name-only match
+Goes to manual review; not auto-sent
+10BE high-confidence PAN match
+Auto-match allowed but still require approval before bulk dispatch if setting enabled
+Send PAN recovery link
+Donor can update without full login; audit log created
+Annual receipt generation
+PDF includes all donations in FY and total
+Email bounce
+Communication log shows bounced/failed; retry possible
+WhatsApp failure
+Failure reason and retry count stored
+Fundraiser commission ledger
+Shows earned, paid, pending but does not auto-pay
+Generated export older than 60 days
+Download expired/deleted; audit remains
+Admin without PAN export permission
+Cannot download PAN/compliance export
+CA role
+Read-only reports; cannot edit donation/certificate
+Final developer instruction: Do not build this as scattered pages. Build it as a controlled NGO OS. Every module must share donor identity, donation ledger, compliance status, audit log, communication log and permission checks. If any financial/compliance action happens without audit, the implementation is incomplete.

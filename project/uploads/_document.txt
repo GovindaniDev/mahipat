@@ -1,0 +1,1524 @@
+GOVINDANI NGO OS
+Complete Strategic, Product, Technical, Revenue and Expansion Blueprint
+Founder-grade master document for technical, non-technical, senior developer, sales, operations and AI execution teams
+Company
+Govindani Infotech Pvt. Ltd. / Binlang
+Founder
+Govind Govindani
+Document Type
+Internal strategic blueprint and execution specification
+Core Thesis
+NGO Website is the entry point; NGO OS is the recurring revenue platform
+Prepared For
+Leadership, developers, sales, support, AI workflow teams
+Version
+v1.0 - Complete Founder Draft
+One platform to help NGOs launch, collect, manage, report, retain donors and scale fundraising.
+[Heading1] Table of Contents
+[ListNumber] 1. Executive Decision and Strategic Thesis
+[ListNumber] 2. About Founder and Company
+[ListNumber] 3. Market Reality and Source-backed Signals
+[ListNumber] 4. Problem Landscape: Why NGOs Need an Operating System
+[ListNumber] 5. Product Vision: What Govindani NGO OS Is and Is Not
+[ListNumber] 6. Product Architecture and Module Map
+[ListNumber] 7. Detailed Plan Structure and Feature Logic
+[ListNumber] 8. Revenue Model and Unit Economics
+[ListNumber] 9. Website Business Integration and Recurring Conversion Engine
+[ListNumber] 10. Financial Projections: 3 Months to 5 Years
+[ListNumber] 11. Expense Model, Loss Possibilities and Risk Controls
+[ListNumber] 12. AI Strategy: Why AI Helps Instead of Destroying the Product
+[ListNumber] 13. Go-to-Market Strategy: Cities, Segments, Channels
+[ListNumber] 14. Sales Playbook, Offers and Objection Handling
+[ListNumber] 15. Technical Implementation Blueprint
+[ListNumber] 16. Data Model, Security and Compliance Logic
+[ListNumber] 17. Operations, Support, Team and Incentive Model
+[ListNumber] 18. Roadmap: 3 Months, 6 Months, 1 Year, 3 Years, 5 Years
+[ListNumber] 19. Dashboards, KPIs and Management Review System
+[ListNumber] 20. Final Founder Verdict and Execution Commandments
+[ListNumber] Appendices: Sources, formulas, assumptions and sample tables
+[Heading1] 1. Executive Decision and Strategic Thesis
+The final strategic decision is clear: Govindani should not remain an NGO website vendor. The company should use website projects as the acquisition engine and convert every eligible NGO into a recurring SaaS customer through Govindani NGO OS.
+[Heading2] The One-line Founder Decision
+Sell websites for cash flow. Sell NGO OS for recurring revenue. Use donor CRM, receipts, reports, campaigns and operations as the retention moat.
+[Heading2] Why this is the correct direction
+[ListBullet] Website development revenue is immediate but one-time; SaaS subscription revenue is smaller initially but compounds monthly.
+[ListBullet] NGOs do not want to pay percentage cuts on donations; they accept fixed technology fees when the system saves operations time and improves donor management.
+[ListBullet] AI will reduce website development pricing pressure, but it will increase the need for systems, automation, CRM and operational intelligence.
+[ListBullet] The strongest asset is not hosting or receipt generation; it is structured donor, campaign, receipt, cause and communication data across NGOs.
+[ListBullet] Govindani already has the unfair advantage: existing web development pipeline, NGO leads, digital marketing service, execution team and product direction.
+Strategic Layer
+Decision
+Reason
+Acquisition
+Continue selling NGO websites
+Immediate cash flow and trust entry point
+Retention
+Convert websites to subscription after first year
+Makes one-time clients recurring
+Pricing psychology
+Do not take percentage of donations
+NGOs hate being charged for fundraising success
+Usage economics
+Charge for receipt/donor scale and add-ons
+Fairly covers operational load without looking like a donation tax
+Expansion
+Build NGO OS as sector infrastructure
+Creates high switching cost and long-term value
+[Heading1] 2. About Founder and Company
+[Heading2] Founder: Govind Govindani
+Govind Govindani is building Govindani Infotech Pvt. Ltd. as a technology and digital transformation company with current execution strength in websites, marketing, CRM systems, automation, SaaS products, NGO technology and business infrastructure.
+The founder advantage is not theoretical. The organization already sells and delivers websites, manages digital marketing campaigns, builds internal CRM/product systems, and has direct experience with NGO donation flows and high-volume receipt requirements.
+[Heading2] Company: Govindani Infotech Pvt. Ltd. / Binlang
+Capability
+Current Strength
+Strategic Use in NGO OS
+WordPress website production
+10+ websites/month potential pipeline
+Front-end acquisition and template deployment engine
+Marketing service
+Social media, lead generation, campaigns
+NGO growth campaigns and lead acquisition
+Custom development
+Backend/frontend/product development team
+SaaS core, integrations, dashboards, automation
+CRM/product thinking
+Internal CRM and automation direction
+Donor CRM, receipt engine, reports and retention analytics
+Podcast/media studio
+Founder/brand credibility content
+Authority-building and nonprofit storytelling channel
+Existing NGO exposure
+Donation, receipt, Razorpay, campaign flows
+Market-specific product fit
+[Heading1] 3. Market Reality and Source-backed Signals
+The nonprofit fundraising market is no longer offline-only. Digital donation platforms, UPI, crowdfunding and donor dashboards have trained donors and NGOs to expect speed, transparency and digital records. The gap is that many NGOs still operate their own organization through scattered systems.
+[Heading2] Source-backed market signals
+Source
+Observed Market Signal
+Strategic Meaning for Govindani NGO OS
+DonateKart [S1]
+Public homepage claims 400+ Cr raised, 25 lakh donors and 10,000+ NGOs. It also highlights trackable donations and regular updates.
+The market understands digital giving, campaign storytelling and donor update loops. Govindani can compete as owned NGO infrastructure, not as another crowdfunding marketplace.
+danamojo [S2]
+Positions itself as a payment platform for NGOs, mentions 1,400+ NGOs, recurring donations, QR code platform, instant 80G receipt, dashboards and compliance features.
+Payment plus receipts is already validated. Govindani must go beyond payments into full NGO operations and CRM.
+Ketto [S3]
+Shows plans with free, 5% and 7% platform fee models plus payment gateway notes.
+Crowdfunding platforms can charge success fees, but your owned NGO OS should avoid percentage-based donation cuts.
+Milaap [S4]
+Markets 0% platform fees, simple setup, smart dashboard, withdrawals, security and 24x7 support.
+The market has trained NGOs to like zero-platform-fee language; fixed subscription feels cleaner than donation percentage.
+UPI May 2026 [S5]
+Reported 23.2 billion UPI transactions worth Rs 29.90 lakh crore in May 2026.
+Digital payment behavior is mainstream; donation flows and QR-driven giving can scale further.
+[Heading2] Strategic interpretation
+[ListBullet] Crowdfunding players prove donor willingness to give online.
+[ListBullet] Payment tools prove NGOs need receipts, dashboards and recurring giving support.
+[ListBullet] The unserved layer is an owned operating system where the NGO controls its website, donors, receipts, campaigns and data.
+[ListBullet] Govindani can avoid direct war with big crowdfunding platforms by selling fixed-cost infrastructure, not fundraising marketplace visibility.
+[Heading1] 4. Problem Landscape: Why NGOs Need an Operating System
+The real enemy is not another platform. The real enemy is scattered operations.
+Current NGO Tool
+What It Handles
+What It Fails To Handle
+WordPress website
+Public brand, pages, forms
+Donor CRM, receipts, automation, reports
+Razorpay/payment page
+Payment collection
+Campaign context, donor lifecycle, NGO operations
+Excel sheets
+Manual donor records
+Accuracy, automation, segmentation, history
+WhatsApp
+Communication
+Structured campaigns, compliance, tracking
+Gmail
+Receipts and follow-up
+Centralized donor intelligence
+Paper files
+Audit documents
+Search, exports, dashboards, reporting speed
+[Heading2] Pain by stakeholder
+Stakeholder
+Daily Pain
+Desired Outcome
+Founder/Trustee
+Cannot see donations, donors, receipts and campaigns in one dashboard
+One truth dashboard
+Account/Admin team
+Manual receipts, Excel updates, reconciliation pressure
+Automated receipt and export engine
+Fundraising team
+No clear donor segmentation or reactivation list
+Donor CRM and follow-up pipeline
+Volunteer/team members
+No controlled access and task ownership
+Role-based access and simple workflow
+Donor
+Needs trust, receipt, updates and payment confidence
+Clean donation journey and timely communication
+[Heading1] 5. Product Vision: What Govindani NGO OS Is and Is Not
+[Heading2] What it is
+[ListBullet] A complete operating system for donation-driven organizations.
+[ListBullet] A SaaS layer connected to a website, payment gateway, receipts, donor CRM, campaigns and reports.
+[ListBullet] A retention and operational intelligence system, not only a donation button.
+[ListBullet] A scalable business model for Govindani that converts service clients into recurring SaaS clients.
+[Heading2] What it is not
+[ListBullet] It is not only a WordPress website.
+[ListBullet] It is not a generic CRM.
+[ListBullet] It is not a donation marketplace competing directly on crowdfunding visibility.
+[ListBullet] It is not accounting software replacing CA work.
+[ListBullet] It is not an AI content tool.
+[Heading2] Positioning statement
+Govindani NGO OS helps NGOs manage donations, donors, receipts, campaigns and operations from one platform, without losing donor ownership or paying percentage-based platform commissions.
+[Heading1] 6. Product Architecture and Module Map
+[Heading2] High-level architecture
+Layer
+Responsibility
+Notes
+WordPress/Website Layer
+Public pages, cause pages, landing pages, SEO, content, frontend trust
+Can be a client website or Govindani-provided template
+NGO OS Backend
+Receipts, donors, campaigns, CRM, reports, users, settings
+Core SaaS system, not custom per NGO
+Payment Integration
+Razorpay or approved gateway handling payment confirmation
+Gateway account should preferably belong to NGO
+Data Layer
+Donor records, receipt records, campaign records, logs, exports
+Most valuable long-term asset
+Communication Layer
+Email, WhatsApp add-on, notifications
+WhatsApp treated as add-on, not main profit center
+Analytics Layer
+Donor reports, campaign reports, retention and forecasting
+Future AI engine sits here
+Admin Layer
+Govindani super admin controls tenants, limits, support and billing
+Keeps SaaS standardized
+[Heading3] NGO Website
+Public brand presence, pages, forms, trust blocks, cause pages and donation entry points.
+[Heading3] Donation System
+Donation form, amount selection, campaign mapping, donor details, payment redirect and success page.
+[Heading3] QR Donation System
+QR-based donation links for offline campaigns, temples, events and field activities.
+[Heading3] Receipt Engine
+Auto receipt numbering, donor details, amount, date, purpose, PDF/email download, 80G support where configured.
+[Heading3] Donor CRM
+Donor profile, history, total donated, last donation, campaign participation, segmentation and exports.
+[Heading3] Campaign Management
+Create and manage fundraising campaigns, case pages, causes, images, goals and progress.
+[Heading3] Blog/Gallery
+Content, updates, impact stories, media proof and trust-building assets.
+[Heading3] Reports
+Donation reports, receipt reports, campaign reports, donor reports, export reports and audit-ready sheets.
+[Heading3] User & Role Management
+Multiple users, permissions, branch/team controls depending on plan.
+[Heading3] WhatsApp Add-on
+Optional messaging infrastructure with usage-based charging and provider/Meta pass-through costs.
+[Heading3] CSR/Grant Tracking
+Advanced module for larger NGOs managing CSR leads, grant pipelines, proposals and status.
+[Heading3] API Access
+For large NGOs needing integration with existing tools or external apps.
+[Heading1] 7. Detailed Plan Structure and Feature Logic
+The plans are designed to guide NGOs from basic digital presence to operational maturity. The plan difference should not feel like artificial locking. It should reflect actual operational complexity.
+Plan
+Ideal Customer
+Core Promise
+Scale Logic
+Starter
+Small NGOs, trusts, temples, local charitable organizations
+Launch website, collect donations, issue receipts, manage basic donors
+Basic limits to keep cost controlled
+Growth
+Active NGOs with regular fundraising and team operations
+Manage donors, campaigns, cases, events and volunteers with better reports
+Designed for NGOs with higher activity and multiple users
+Pro
+Large NGOs, foundations, multi-branch organizations
+Advanced dashboards, CSR/grants, API, retention analytics and branch/team controls
+Designed for mature NGOs with high volume and reporting needs
+[Heading2] Plan feature comparison
+Feature
+Starter
+Growth
+Pro
+NGO Website
+Yes
+Yes
+Yes
+Donation System
+Yes
+Yes
+Yes
+QR Donation System
+Yes
+Yes
+Yes
+Razorpay Integration
+Yes
+Yes
+Yes
+Receipt Generation
+Yes
+Yes
+Yes
+Donor Management
+Yes
+Yes
+Yes
+Campaign Management
+Yes
+Yes
+Yes
+Blog Management
+Yes
+Yes
+Yes
+Gallery Management
+Yes
+Yes
+Yes
+Basic Reports
+Yes
+Yes
+Yes
+Basic Dashboard
+Yes
+Yes
+Yes
+SSL, Security & Hosting
+Yes
+Yes
+Yes
+Maintenance & Updates
+Yes
+Yes
+Yes
+Technical Support
+Yes
+Yes
+Yes
+Volunteer Management
+No
+Yes
+Yes
+Event Management
+No
+Yes
+Yes
+Case Management System
+No
+Yes
+Yes
+Multi-User Access
+No
+Yes
+Yes
+Donor Segmentation
+No
+Yes
+Yes
+Advanced Reports
+No
+Yes
+Yes
+Lead Management
+No
+Yes
+Yes
+Follow-up Management
+No
+Yes
+Yes
+WhatsApp Integration Add-on
+No
+Yes
+Yes
+CSR Management
+No
+No
+Yes
+Grant Tracking
+No
+No
+Yes
+API Access
+No
+No
+Yes
+Multi-Branch Management
+No
+No
+Yes
+Advanced Dashboard
+No
+No
+Yes
+Donor Retention Analytics
+No
+No
+Yes
+Team Permission Controls
+No
+No
+Yes
+Data Export & Import
+No
+No
+Yes
+Custom Branding
+No
+No
+Yes
+Priority Support
+No
+No
+Yes
+[Heading1] 8. Revenue Model and Unit Economics
+[Heading2] Core revenue streams
+Revenue Stream
+Description
+Strategic Role
+Website setup fee
+One-time website/project revenue from NGOs
+Funds operations and acquisition
+Monthly SaaS subscription
+Recurring plan fee after onboarding or second year
+Main compounding revenue
+Receipt usage
+Additional receipt charge beyond included plan limit
+Covers volume and incentivizes higher plans
+Case/campaign creation service
+Govindani team creates cases/campaigns for NGOs
+Operational service revenue; should remain optional
+WhatsApp add-on
+Message sending with provider/Meta cost plus margin
+Retention feature, not core profit
+Dedicated infrastructure
+For high-volume NGOs needing separate resources
+Protects margins and uptime
+Custom development
+Special workflows or integrations
+High-margin but must be controlled to avoid agency trap
+Data migration
+Import old donor/receipt/campaign data
+Useful onboarding revenue and lock-in builder
+[Heading2] Pricing assumptions used for internal modelling
+Item
+Internal Assumption
+Notes
+Website sale
+Rs 35,000 average
+Can vary from Rs 30,000 to Rs 2,00,000+
+Starter plan
+Rs 2,500/month
+1,000 receipts, 500 donors included
+Growth plan
+Rs 4,500/month
+5,000 receipts, 2,500 donors included
+Pro plan
+Rs 8,000/month
+15,000 receipts, 10,000 donors included
+Receipt overage
+Starter Rs 0.75, Growth Rs 0.60, Pro Rs 0.50
+Can be displayed as usage based rather than bold public pricing
+WhatsApp margin
+Rs 0.10 per message assumed
+Most message cost may go to provider/Meta
+Case service
+10% NGOs, 15 cases/month, Rs 350 to Rs 850 per case depending package
+Keep separate from SaaS
+Senior developer cost
+Rs 40,000/month
+Use conservative salary assumptions
+500 NGO Conservative Model
+Amount / Month
+Subscription revenue
+Rs 1,995,000
+Additional receipt revenue
+Rs 484,750
+WhatsApp margin
+Rs 15,000
+Case creation revenue
+Rs 262,500
+Total revenue
+Rs 2,757,250
+Estimated monthly expenses
+Rs 850,000
+Estimated profit before tax
+Rs 1,907,250
+[Heading1] 9. Website Business Integration and Recurring Conversion Engine
+Govindani should not stop WordPress website development immediately. The current website business becomes the feeder system into the SaaS business.
+Stage
+Action
+Revenue Impact
+Year 1 website sale
+Sell NGO website with integrated donation system
+Immediate cash: Rs 30,000 to Rs 2,00,000+
+Month 1-12
+Provide first-year hosting/maintenance/package experience
+Build trust and gather usage pattern
+Year 2 renewal
+Move NGO into minimum SaaS plan
+Recurring revenue begins
+Scale phase
+Offer Growth/Pro upgrade based on receipt/donor volume
+Higher ARPU and lower churn
+Retention phase
+Add donor CRM, reports, case service, WhatsApp add-on
+Deep operational dependency
+[Heading2] Why this model is safer
+[ListBullet] Website business funds SaaS development instead of forcing SaaS to survive from day one.
+[ListBullet] Every website client becomes a potential annual subscription client.
+[ListBullet] Clients already trust Govindani before subscription conversation begins.
+[ListBullet] The first year acts like onboarding and product education.
+[Heading1] 10. Financial Projections: 3 Months to 5 Years
+Period
+NGOs
+Subscription
+Receipts
+WA Margin
+Case Service
+Total Monthly Revenue
+Est. Profit / Month
+3 Months
+25
+Rs 102,500
+Rs 25,300
+Rs 560
+Rs 10,500
+Rs 138,860
+Rs 0
+6 Months
+100
+Rs 399,000
+Rs 96,950
+Rs 2,400
+Rs 52,500
+Rs 550,850
+Rs 0
+1 Year
+250
+Rs 997,500
+Rs 242,375
+Rs 6,000
+Rs 131,250
+Rs 1,377,125
+Rs 377,125
+3 Years
+1000
+Rs 3,990,000
+Rs 969,500
+Rs 24,000
+Rs 525,000
+Rs 5,508,500
+Rs 2,508,500
+5 Years
+5000
+Rs 19,950,000
+Rs 4,847,500
+Rs 120,000
+Rs 2,625,000
+Rs 27,542,500
+Rs 15,542,500
+These are operating assumptions, not guarantees. Real results depend on acquisition speed, churn, support load, payment discipline, feature maturity and market execution.
+[Heading1] 11. Expense Model, Loss Possibilities and Risk Controls
+Expense Head
+Month 1-3
+At 100 NGOs
+At 500 NGOs
+Control Method
+Development salaries
+Rs 1.5L-2.5L
+Rs 2L-3L
+Rs 3L-5L
+Standard product roadmap, avoid custom chaos
+Support salaries
+Rs 0.5L
+Rs 1L
+Rs 2L-3L
+Knowledge base, training videos, ticket system
+Infrastructure
+Rs 20k-50k
+Rs 50k-1L
+Rs 1L-2L
+Multi-tenant optimization, caching, backups
+Office/admin
+Existing company overhead
+Shared overhead
+Shared overhead
+Do not allocate full office burden to SaaS early
+Marketing/sales
+Variable
+Rs 1L-3L
+Rs 5L+
+Track CAC and payback
+Incentives
+Small pool
+5-10% revenue pool
+Structured pool
+Only on collections, not billing
+Third-party costs
+Payment/WhatsApp/tools
+Higher with usage
+Higher with scale
+Pass through where necessary
+[Heading2] Possibilities of loss
+Risk
+How Loss Happens
+Prevention
+Low acquisition
+Platform ready but NGOs not onboarded
+Start with website pipeline and NGO consultants
+Too much customization
+Every NGO demands unique workflows
+Create plan boundaries and paid custom development
+Support explosion
+Small NGOs require too much handholding
+Onboarding videos, standard templates, paid support tiers
+Server underpricing
+High-volume NGOs on Starter plan consume resources
+Receipt/donor limits and dedicated infrastructure tier
+Churn after year 1
+NGO cancels after initial website project
+Make CRM, receipts, reports and donor history sticky
+Cash collection delay
+Monthly bills not paid on time
+Prepaid billing, auto reminders, service suspension policy
+Legal/compliance confusion
+NGO expects tax/legal guarantee
+Position as software, not legal/CA replacement
+[Heading1] 12. AI Strategy: Why AI Helps Instead of Destroying the Product
+AI will make basic websites cheaper. That is exactly why Govindani must move from website service to NGO operating infrastructure. AI is a threat to generic design work but an accelerator for SaaS automation, donor intelligence and support.
+AI Use Case
+What It Does
+Business Value
+Campaign story generator
+Creates first draft of NGO campaign content
+Reduces content creation time
+Donor segmentation assistant
+Groups donors by frequency, amount, recency and cause
+Improves retention campaigns
+Receipt support assistant
+Answers common receipt/download/payment questions
+Reduces support load
+Fundraising copy suggestions
+Creates email/social/WhatsApp drafts
+Helps NGOs communicate better
+Anomaly detection
+Flags unusual donation spikes, failed payments, duplicate donor records
+Improves trust and operations
+Donor reactivation predictions
+Finds donors likely to donate again
+Creates upsell and growth value
+Monthly trustee report summary
+Summarizes performance for management
+Makes dashboard executive-friendly
+[Heading1] 13. Go-to-Market Strategy: Cities, Segments, Channels
+[Heading2] India priority cities
+Priority
+City/Region
+Why It Matters
+1
+Delhi NCR
+Highest NGO density, CSR access, national foundations, Hindi + English market
+2
+Mumbai
+Corporate CSR capital, large trusts, donor ecosystem
+3
+Ahmedabad / Surat / Vadodara
+Strong donor culture, Jain/trust/gaushala networks, high business purchasing power
+4
+Pune
+Education trusts, NGOs, tech adoption, existing operational base
+5
+Jaipur / Indore / Bhopal / Lucknow
+Hindi belt growth, strong trust and NGO activity, lower competition
+[Heading2] Global Hindi/Indian-origin expansion
+Country
+Target Segment
+Reason
+USA
+Temples, Indian associations, charities
+High donation value and software willingness
+Canada
+Indian community organizations and temples
+High diaspora concentration
+UK
+Hindu/Sikh trusts and charities
+Mature charity culture
+UAE
+Indian community fundraising and temple associations
+High income and community giving
+Mauritius / Fiji / Trinidad
+Indian-origin religious/social organizations
+Underserved digital market
+[Heading1] 14. Sales Playbook, Offers and Objection Handling
+[Heading2] Sales positioning
+Do not sell modules. Sell operational relief and donation growth intelligence.
+Buyer Statement
+Sales Response
+We already have a website
+Great. We do not need to rebuild it. We can connect the donation OS to your existing website and give you donor CRM, receipts and reports.
+We already use Razorpay
+Perfect. Razorpay collects payment. Govindani NGO OS manages what happens after payment: donor record, receipt, campaign mapping and reporting.
+We can manage in Excel
+Excel works until donors, receipts and campaigns grow. Our system prevents donor leakage and saves admin time.
+Why monthly fee?
+Because this is not only hosting. It includes donation system, donor CRM, receipt management, reports, updates and support.
+Do you take donation percentage?
+No. You keep 100% of donations except gateway charges. We charge software and usage fees only.
+Can you create cases for us?
+Yes, as an optional case/campaign creation service. Platform access and content operations are separate.
+[Heading2] Demo flow
+[ListNumber] Show website homepage and donation button.
+[ListNumber] Show campaign/case page.
+[ListNumber] Make a test donation.
+[ListNumber] Show receipt generation.
+[ListNumber] Open donor profile and donation history.
+[ListNumber] Show reports and exports.
+[ListNumber] Show plan upgrade logic based on volume.
+[ListNumber] End with: Keep your donations, control your donors, automate your operations.
+[Heading1] 15. Technical Implementation Blueprint
+Component
+Recommended Implementation
+Developer Notes
+Frontend website
+WordPress or template-based static/React pages
+Public pages should remain fast and SEO-friendly
+SaaS backend
+Laravel/Spring Boot/Node depending current stack; modular monolith first
+Avoid premature microservices
+Database
+MySQL/PostgreSQL with tenant_id in all core tables
+Strict indexing for donor, receipt, campaign reports
+Payments
+Razorpay integration with webhook verification
+Idempotency required for callbacks
+Receipts
+PDF generation service with queue for high volume
+Do not generate heavy PDFs synchronously at scale
+File storage
+Object storage or separated uploads folder/CDN
+Do not store all proofs in DB
+Caching
+Page cache + API cache where safe
+Essential for 20k+ traffic NGOs
+Reports
+Async report generation for large exports
+Avoid server timeouts
+Notifications
+Email/WhatsApp queue
+Retry logic and delivery logs required
+Super Admin
+Tenant control, limits, billing, suspension, support access
+Govindani must control operational safety
+[Heading1] 16. Data Model, Security and Compliance Logic
+Core Table
+Purpose
+Important Fields
+ngos
+One record per tenant NGO
+ngo_id, name, domain, plan, status, billing_cycle, limits
+users
+Admin/staff users
+user_id, ngo_id, role, mobile, email, status
+donors
+Donor CRM records
+donor_id, ngo_id, name, mobile, email, pan, address, total_donated, last_donation_at
+campaigns
+Donation campaigns/cases
+campaign_id, ngo_id, title, goal, status, category, created_by
+donations
+Payment records
+donation_id, ngo_id, donor_id, amount, gateway, txn_id, status, campaign_id
+receipts
+Receipt records
+receipt_id, donation_id, receipt_no, pdf_url, issued_at, status
+receipt_usage_ledger
+Plan usage tracking
+ngo_id, month, included_count, extra_count, rate_snapshot
+messages
+Communication log
+ngo_id, donor_id, channel, template, cost, status
+support_tickets
+Support queue
+ticket_id, ngo_id, issue_type, priority, status, assigned_to
+audit_logs
+Action trail
+actor_id, action, entity, before, after, timestamp
+[Heading2] Security rules
+[ListBullet] Every API must check tenant ownership.
+[ListBullet] Payment webhooks must be verified and idempotent.
+[ListBullet] Receipts must not be editable after issue except through correction/reissue flow.
+[ListBullet] PAN and donor personal data access should be role-controlled.
+[ListBullet] Exports should be logged with user, timestamp and filter criteria.
+[ListBullet] Backups must be daily and periodically restore-tested.
+[Heading1] 17. Operations, Support, Team and Incentive Model
+Team Function
+Initial Requirement
+Scale Requirement
+Product owner
+Founder + senior developer lead
+Dedicated product manager
+Development
+2 seniors + 1-2 juniors
+Backend, frontend, QA, DevOps separation
+Support
+1 support executive
+Tier-1 support, onboarding, trainer
+Sales
+Founder-led + 1-2 sales
+City-wise outbound and partner team
+Content/case service
+As needed
+Dedicated campaign operations pod
+Accounts/billing
+Shared initially
+Dedicated SaaS billing and reconciliation
+[Heading2] Incentive principle
+Incentives should be paid on collected revenue, not billed revenue. Product incentive must reward stability, zero-bug delivery, onboarding success, churn reduction and support closure, not just feature shipping.
+Metric
+Eligible Team
+Why
+New paid NGO onboarding
+Sales + onboarding
+Rewards acquisition and activation
+Zero critical bug month
+Development + QA
+Protects product trust
+On-time feature milestone
+Development
+Encourages disciplined delivery
+Churn prevented
+Support + account owner
+Rewards retention
+Case service delivery
+Content/ops
+Direct revenue-linked service
+[Heading1] 18. Roadmap: 3 Months, 6 Months, 1 Year, 3 Years, 5 Years
+Timeline
+Goal
+Execution Focus
+Success Metric
+0-3 Months
+Stabilize MVP and first 25 paying NGOs
+Website + donation + receipt + donor CRM + reports
+25 live NGOs, support process proven
+3-6 Months
+Reach 100 NGOs
+Sales playbook, onboarding automation, plan limits, receipt billing
+100 NGOs, MRR Rs 3-5L
+6-12 Months
+Reach 250 NGOs
+Partner channels, city expansion, Growth plan adoption
+MRR Rs 10-15L
+1-3 Years
+Reach 1000 NGOs
+National positioning, automation, AI reports, API, multi-branch
+MRR Rs 50L+
+3-5 Years
+Reach 5000 NGOs/global expansion
+Diaspora market, enterprise infrastructure, donor intelligence
+MRR Rs 3Cr+ potential
+[Heading1] 19. Dashboards, KPIs and Management Review System
+Dashboard
+Key Metrics
+Review Frequency
+Founder Dashboard
+MRR, new NGOs, churn, active donors, receipts, support backlog, collections
+Daily/Weekly
+Sales Dashboard
+Leads, demos, proposals, closures, CAC, city performance
+Daily/Weekly
+Product Dashboard
+Bugs, uptime, deployment status, feature adoption
+Weekly
+NGO Success Dashboard
+Donation volume, receipt volume, donor repeat rate, campaign performance
+Monthly
+Finance Dashboard
+Billing, collected amount, unpaid invoices, infrastructure cost, gross margin
+Weekly/Monthly
+[Heading2] North Star Metric
+Monthly Active NGOs with successful donation + receipt activity.
+[Heading1] 20. Final Founder Verdict and Execution Commandments
+[ListBullet] Do not build a custom system for every NGO. Build one core product with configurable settings.
+[ListBullet] Do not sell donation percentage cuts. Sell fixed platform value and scale-based usage.
+[ListBullet] Do not stop website business. Use it as acquisition cash flow.
+[ListBullet] Do not treat WhatsApp as profit center. Treat it as retention and communication utility.
+[ListBullet] Do not overbuild AI before donor CRM and receipt engine are stable.
+[ListBullet] Do not allow sales to promise custom features without written product approval.
+[ListBullet] Focus first 100 NGOs on proof, onboarding and repeatable delivery, not vanity features.
+[ListBullet] At 250 NGOs the business becomes healthy. At 500 NGOs it becomes a serious profit engine. At 1000 NGOs it becomes infrastructure.
+[Heading1] Appendix A: Source Notes
+[ListBullet] [S1] DonateKart official website
+[Small] Claims India's most trusted donation platform, 400+ Cr raised, 25 lakh donors, 10,000+ NGOs, product giving, verified charities, guaranteed updates, easy setup and support. URL: https://www.donatekart.com/
+[ListBullet] [S2] danamojo official website
+[Small] Mentions 1,400+ NGOs, one-time donations, committed/recurring giving platform, QR code platform, instant 80G receipt, dashboards, Form 10BD/10BE and compliance features. URL: https://danamojo.org/
+[ListBullet] [S3] Ketto pricing page
+[Small] Shows crowdfunding plans including free, 5% platform fee and 7% platform fee options plus payment gateway fee and GST notes. URL: https://www.ketto.org/support/plans-and-pricing.php
+[ListBullet] [S4] Milaap pricing page
+[Small] Markets 0% platform fees, simple setup, smart dashboard, withdrawals, safety and 24x7 support. URL: https://milaap.org/crowdfunding/pricing
+[ListBullet] [S5] Economic Times UPI report
+[Small] Reported May 2026 UPI at 23.2 billion transactions worth Rs 29.90 lakh crore. URL: https://m.economictimes.com/tech/technology/upi-processes-rs-29-9-lakh-crore-in-may-transaction-volumes-hit-23-2-billion/articleshow/131439222.cms
+[Heading1] Appendix B: Calculation Formulas
+Formula
+Definition
+Monthly subscription revenue
+Sum of active NGOs in each plan x monthly plan price
+Additional receipt revenue
+Sum of max(0, actual_receipts - included_receipts) x plan receipt rate
+WhatsApp margin
+Total messages x retained margin per message after provider/Meta costs
+Case service revenue
+NGOs using service x cases/month x price/case
+Gross monthly revenue
+Subscription + receipt + WhatsApp margin + case service + other add-ons
+Estimated operating profit
+Gross monthly revenue - monthly operating expenses
+CAC payback
+Customer acquisition cost / monthly gross profit per NGO
+Churn risk
+Lost MRR / starting MRR in same period
+[Heading1] 21. Deep Product Definition: The Exact Product Govindani Must Build
+This section converts the strategic idea into product language for senior developers, product owners and AI-assisted builders. The platform must be built as a configurable SaaS product, not as repeated custom websites.
+Product Layer
+Must Exist In MVP
+Must Exist In Growth Stage
+Must Not Be Built Casually
+Tenant setup
+NGO profile, domain, plan, limits, status
+Custom domain mapping, branch profiles
+Per-client code forks
+Website integration
+Donation buttons, campaigns, pages, embed links
+WordPress plugin, shortcodes, API widgets
+Hardcoded manual links
+Donor core
+Donor profile, donation history, receipt history
+Retention score, donor segment, journey map
+Duplicate donor chaos
+Receipt core
+Auto PDF, receipt number, email/download
+Bulk receipts, correction/reissue, 80G fields
+Editable receipts without logs
+Campaign core
+Cause/case page, goal, images, active status
+Category, priority, SEO, case service workflow
+Unlimited free manual case work
+Reports
+Donation, donor, receipt, campaign reports
+Advanced exports, management summaries
+Slow reports generated live for huge data
+Admin control
+Plan limits, support access, billing status
+Usage analytics, churn risk, data migration controls
+Support team direct DB edits
+[Heading2] Product principle
+Every feature must either collect money, save time, improve trust, improve reporting, increase retention, or protect operational scale. If a feature does none of these, it is noise.
+[Heading1] 22. NGO Buyer Personas and Sales Psychology
+Persona
+Budget Capacity
+Primary Fear
+What They Buy
+How To Sell
+Small Trust / Local NGO
+Low to medium
+Technology confusion and lack of trust
+Starter plan + website
+Simple, fixed cost, handholding, no donation percentage
+Temple / Gaushala
+Medium
+Losing donor trust and receipt chaos
+Starter/Growth + QR + receipts
+Donor trust, receipts, recurring giving, cause stories
+Active Fundraising NGO
+Medium to high
+Donor data scattered across Razorpay, Excel and WhatsApp
+Growth plan
+Donor CRM, receipt automation, reports, follow-up
+Large Foundation
+High
+Reporting, team control, branch operations, CSR documentation
+Pro plan / dedicated setup
+Security, dashboards, API, role control, data exports
+NGO Consultant / CA
+Indirect buyer/influencer
+Client compliance and operations burden
+Multiple referrals
+Partner margin, easy onboarding, reliable reports
+[ListBullet] Most NGOs do not wake up wanting software. They wake up wanting fewer mistakes, faster receipts, better donor follow-up, better trustee reporting and less dependency on scattered Excel files.
+[ListBullet] Sales language should focus on outcomes: save admin time, manage donors, issue receipts, run campaigns, and keep donation data organized.
+[ListBullet] Do not lead with AI, API, cloud, database or technical jargon. Those are proof points, not purchase reasons.
+[Heading1] 23. Complete Module Specification: NGO Profile and Tenant Setup
+Field / Function
+Type
+Validation / Rule
+Plan Impact
+Admin Visibility
+NGO Legal Name
+Text
+Required, 3-200 characters, appears on receipts and reports
+All plans
+Yes
+Display Name
+Text
+Required, 3-150 characters, shown on website and dashboard
+All plans
+Yes
+Registration Type
+Dropdown
+Trust / Society / Section 8 / Temple Trust / Other
+All plans
+Yes
+PAN
+Text
+Optional/Required by admin setting, uppercase, 10 characters if provided
+All plans
+Masked
+80G Status
+Toggle + file
+Can enable 80G receipt fields only if certificate details entered
+Growth/Pro preferred
+Yes
+Address
+Structured fields
+Village/city, district, state, pincode required
+All plans
+Yes
+Primary Contact
+Mobile/email
+10 digit mobile; valid email format
+All plans
+Yes
+Domain
+URL
+Can be own domain or Govindani subdomain
+All plans
+Yes
+Plan
+Enum
+Starter/Growth/Pro/Custom
+All plans
+Super admin only
+Billing Status
+Enum
+Active, Trial, Due, Suspended, Cancelled
+All plans
+Super admin only
+Receipt Limit
+Integer
+Plan default, can be overridden by super admin
+All plans
+Super admin only
+Donor Limit
+Integer
+Plan default, can be overridden by super admin
+All plans
+Super admin only
+[Heading1] 24. Complete Module Specification: Donation Flow
+The donation flow is the heart of the system. It must be clean enough for donors and structured enough for NGO operations.
+Screen Step
+Fields / Elements
+Backend Rule
+Failure Handling
+Donation entry
+Campaign/cause, amount buttons, custom amount, donor details
+Campaign ID and NGO ID must be locked before payment
+If campaign inactive, redirect to general donation page
+Donor details
+Name, mobile, email, PAN optional, address optional depending receipt requirement
+Mobile 10 digits, email valid, PAN validation if entered
+Show inline errors before gateway redirect
+Payment redirect
+Gateway order creation, amount, currency INR, receipt reference
+Use idempotency key and gateway order ID
+If gateway order fails, show retry and log error
+Payment callback
+Payment captured, failed, pending
+Webhook verification mandatory, duplicate callback ignored
+Failed/pending marked without receipt issue
+Receipt trigger
+Receipt generated after captured payment
+Receipt number locked, PDF generated or queued
+If PDF fails, donation remains captured and receipt retry queue starts
+Thank you page
+Donation success, receipt link, campaign share
+Must not depend on email delivery
+Show receipt download when generated
+[Heading2] Donation formulas
+Formula
+Meaning
+gateway_amount_paise = donation_amount_rupees x 100
+All gateway amounts must be integer paise internally
+net_donation_visible_to_ngo = donation_amount - gateway_charges_if_displayed
+Used only for reporting if gateway charge data is available
+receipt_count_monthly = count(receipts where ngo_id and issued_at in billing_month)
+Used for plan overage billing
+receipt_overage = max(0, receipt_count_monthly - included_receipt_limit)
+Extra receipt usage
+receipt_overage_bill = receipt_overage x plan_receipt_rate_snapshot
+Charge must use rate snapshot for that billing month
+[Heading1] 25. Complete Module Specification: Receipt Engine
+Requirement
+Developer Rule
+Reason
+Receipt number sequence
+Per NGO financial-year sequence; no duplicate allowed
+Audit and donor trust
+Receipt generation trigger
+Only after payment captured or offline donation approved
+Avoid false receipts
+PDF design
+NGO logo, name, address, donor, amount, purpose, date, receipt no, optional 80G details
+Professional donor communication
+Correction flow
+Do not edit original silently; create corrected version or reissued receipt log
+Audit safety
+Bulk download
+Admin can export receipts by date/campaign
+Operational need
+Search
+By donor name, mobile, email, receipt no, transaction ID
+Support efficiency
+Email delivery
+Queue-based, retry on failure, log status
+Avoid donation flow delays
+WhatsApp delivery
+Only if add-on enabled; usage logged separately
+Billing and compliance
+Receipt Field
+Type
+Validation
+receipt_id
+UUID/BigInt
+Primary key
+ngo_id
+FK
+Required
+donation_id
+FK
+Required
+receipt_no
+String
+Unique per NGO/FY
+donor_name
+String
+Snapshot from donation
+donor_mobile
+String
+10 digit snapshot
+amount_paise
+Integer
+Greater than 0
+issued_at
+Timestamp
+UTC stored, IST shown
+pdf_url
+String
+Required after generation
+status
+Enum
+Generated, Reissued, Cancelled, Failed
+tax_fields
+JSON/Columns
+80G/12A metadata if applicable
+[Heading1] 26. Complete Module Specification: Donor CRM
+CRM Function
+Logic
+Business Value
+Duplicate detection
+Match by mobile first, then email, then PAN if available
+Prevents fake donor inflation
+Donor profile
+Total donated, last donation, first donation, campaign history, receipt history
+One donor truth
+Segments
+New, repeat, high-value, dormant, recurring, campaign-specific
+Enables retention
+Dormant donor list
+Last donation older than configured days
+Reactivation opportunities
+Top donor list
+By total donated and frequency
+Trustee reporting and relationship management
+Campaign affinity
+Track which causes donor supports
+Better targeted communication
+Export
+CSV/XLSX by filters
+Operations and audit
+Consent flag
+Communication permission where needed
+Compliance and trust
+[Heading2] Donor retention formulas
+Metric
+Formula
+Repeat donor rate
+unique donors with 2+ donations / total unique donors
+Dormant donor count
+donors with last_donation_at < today - configured_days
+Average donation value
+total donation amount / donation count
+Donor lifetime value
+sum of all donations by donor
+Campaign conversion rate
+successful donations / campaign visitors when visitor tracking exists
+[Heading1] 27. Complete Module Specification: Campaign and Case Management
+Field / Function
+Rule
+Notes
+Campaign title
+Required, 5-120 chars
+SEO-friendly slug generated
+Campaign category
+Dropdown + admin managed
+Animal, education, medical, food, temple, emergency, custom
+Goal amount
+Optional/required by setting
+Shown as progress if enabled
+Short story
+Required for public page
+Plain language impact explanation
+Long description
+Rich text
+Can include photos, beneficiary details, proof
+Images
+Minimum 1, max controlled by plan
+Compress and store in object storage
+Beneficiary/case details
+Optional structured fields
+Useful for case creation service
+Status
+Draft, Published, Paused, Closed
+Only published visible publicly
+SEO fields
+Title, meta description, slug
+Growth/Pro or case service
+Donation mapping
+Every donation stores campaign_id
+Required for reports
+[Heading2] Case creation service rule
+Monthly Case Volume
+Suggested Internal Pricing Logic
+Operational Rule
+1-5 cases
+Included in selected service package or free for premium offer
+Do not overload support team
+6-25 cases
+Premium per-case price such as Rs 850 if team-managed
+Includes content, image placement, setup, publishing
+26-100 cases
+Lower per-case bulk rate if process standardized
+Dedicated content operations required
+100+ cases
+Custom pricing
+Requires SLA and team allocation
+[Heading1] 28. Complete Module Specification: WhatsApp Add-on
+WhatsApp should be treated as an optional add-on and retention feature, not as the main profit center. Provider and Meta costs can change. Govindani should keep transparent usage billing and margin protection.
+Item
+Rule
+Availability
+Growth and Pro only by default; Starter can request paid add-on
+Setup
+Template approval and sender setup handled as operational process
+Billing
+Usage based; client-facing price can be provider actual + platform fee
+Internal margin assumption
+Rs 0.10 per message can be used for conservative projection
+Logs
+Each message stores NGO, donor, template, status, cost, timestamp
+Opt-out
+Donor opt-out must be respected where configured
+Use cases
+Donation receipt link, campaign update, thank-you message, event alert, donor reactivation
+[Heading1] 29. Complete Module Specification: Reports and Exports
+Report
+Filters
+Columns / Output
+Donation Report
+Date range, campaign, amount, donor, payment status
+Donation ID, donor, amount, gateway, campaign, date, status
+Receipt Report
+Date range, receipt no, campaign, donor
+Receipt no, donation ID, donor, amount, issue date, PDF
+Donor Report
+Segment, total donated, last donation, city/state
+Donor details, total donations, count, first/last donation
+Campaign Report
+Campaign, date, status
+Goal, received amount, donor count, conversion
+Usage Report
+Month, plan, tenant
+Receipt count, donor count, extra usage
+Billing Report
+Tenant, month, status
+Plan fee, overage, add-ons, paid/unpaid
+Support Report
+Ticket status, type, NGO
+Open tickets, SLA age, assigned person
+Export Audit
+User, date, report type
+Who exported what and when
+[Heading1] 30. Complete Module Specification: Super Admin Console
+Super Admin Screen
+Core Functions
+Tenant List
+View all NGOs, plan, domain, status, usage, pending bills
+Tenant Detail
+Profile, users, plan limits, receipt usage, support tickets
+Billing Control
+Activate, suspend, due reminders, manual override
+Usage Analytics
+Receipts/month, donors/month, traffic, storage, messages
+Feature Flags
+Enable/disable modules per tenant
+Support Impersonation
+Admin support login with audit log only
+Rate Configuration
+Receipt rates, limits, WhatsApp fee, case service rules
+Data Export Control
+Super admin export for platform analytics
+Infrastructure Monitor
+High usage tenants, error rates, queue backlog
+[Heading1] 31. WordPress Integration Strategy
+WordPress should remain the fast deployment and acquisition layer. NGO OS should remain the backend system and operational intelligence layer. This prevents the company from rebuilding the same backend repeatedly.
+Integration Method
+Use Case
+Pros
+Risks
+Redirect URL
+Fastest launch: donate button redirects to NGO OS page
+Low development, quick deployment
+Less embedded feel
+Embed / iframe
+Donation form appears inside WordPress page
+Better frontend continuity
+Must handle responsiveness/security
+Shortcode plugin
+WordPress shortcode renders campaign/donation widgets
+Best scale for many websites
+Requires plugin maintenance
+API integration
+Custom frontend pulls campaigns/forms through API
+Premium/enterprise flexibility
+Needs developer support
+[Heading1] 32. Billing, Subscription and Suspension Rules
+Rule
+Specification
+Minimum subscription
+3 months minimum for paid SaaS plans
+Billing cycle
+Monthly by default; annual billing with discount can be offered
+First year website bundle
+For website project clients, first year can be included or bundled depending offer
+Second year conversion
+Client must move to minimum SaaS plan for hosting, donation system, receipts and maintenance
+Due reminders
+Automated reminders before due date and after due date
+Suspension grace
+Grace period decided by admin; donation pages should not be suddenly broken without escalation
+Data export
+If client exits, export policy should be documented and chargeable if heavy migration needed
+Overage billing
+Receipt usage calculated monthly using rate snapshot
+Custom work billing
+Custom development and case service billed separately from subscription
+[Heading1] 33. Customer Acquisition Strategy
+Channel
+Execution
+Expected Quality
+Existing website leads
+Offer NGO website with first-year donation system
+High intent
+Meta lead ads
+Target city-wise NGO owners, trustees, gaushalas, temple trusts
+Medium intent, needs filtering
+Consultant/CA partnerships
+Commission/referral for NGO consultants and CAs
+High trust, scalable
+CSR consultants
+Offer NGO digital readiness package
+High-value NGOs
+Webinars
+Teach donor CRM, digital receipts, fundraising reports
+Authority-building
+Podcast/content
+Interview NGO leaders and showcase transformation
+Brand trust
+City-level sales
+Delhi, Jaipur, Indore, Bhopal, Lucknow, Ahmedabad, Pune
+Focused outbound
+Referral program
+Existing NGOs refer other NGOs
+Low CAC, high trust
+[Heading1] 34. Sales Offer Architecture
+Offer Type
+What Client Sees
+Internal Logic
+Website + Donation Starter
+Website with donation system and receipts
+One-time cash plus future subscription
+NGO Digital Growth Package
+Website + donor CRM + campaigns + reports
+Best for Growth plan
+Donation OS Migration
+Connect existing website to NGO OS
+Great for NGOs with old sites
+Case Management Package
+We create and publish cases/campaigns monthly
+Service revenue
+High Volume Foundation Package
+Dedicated performance, custom reports, Pro features
+Enterprise/custom pricing
+Annual Renewal Package
+Hosting, maintenance, receipts, CRM, support
+Locks recurring revenue
+[Heading1] 35. Developer Roadmap and Sprint Breakdown
+Sprint
+Duration
+Deliverables
+Sprint 1
+2 weeks
+Tenant setup, NGO profile, user roles, plan limits
+Sprint 2
+2 weeks
+Donation form, payment gateway integration, webhook handling
+Sprint 3
+2 weeks
+Receipt generation, PDF template, receipt search, email queue
+Sprint 4
+2 weeks
+Donor CRM, donor history, duplicate merge logic
+Sprint 5
+2 weeks
+Campaign/case management, public pages, QR links
+Sprint 6
+2 weeks
+Reports, exports, usage ledger, super admin billing
+Sprint 7
+2 weeks
+WordPress redirect/embed/plugin MVP
+Sprint 8
+2 weeks
+WhatsApp add-on logs, message templates, support tickets
+Sprint 9
+2 weeks
+Performance optimization, queues, caching, backups
+Sprint 10
+2 weeks
+UAT, bug fixes, documentation, onboarding videos
+[Heading1] 36. UAT Test Cases
+Test Case
+Expected Result
+Successful donation
+Payment captured, donor created/updated, receipt generated, campaign updated
+Failed payment
+No receipt generated, donor record not counted as successful donation
+Duplicate webhook
+Only one donation and receipt stored
+Same donor second donation
+Donor profile updates total and history
+Receipt monthly limit exceeded
+Overage ledger records extra receipt
+Campaign paused
+Donation not allowed or redirected according to setting
+NGO billing suspended
+Admin-defined public behavior triggered safely
+PDF generation queue fails
+Donation remains safe and receipt retry available
+Bulk export large date range
+Report generated async without timeout
+Role permission check
+Staff cannot access restricted billing/settings
+WhatsApp message sent
+Message log records status and cost
+Support impersonation
+Audit log records admin access
+[Heading1] 37. Support and Onboarding SOP
+[ListNumber] Collect NGO details, logo, address, registration details, payment gateway credentials and domain details.
+[ListNumber] Create tenant in super admin with correct plan and receipt/donor limits.
+[ListNumber] Set up website or connect existing website through redirect/embed/plugin.
+[ListNumber] Configure donation categories, campaigns, receipt format and email settings.
+[ListNumber] Run test donation and verify receipt, dashboard and report visibility.
+[ListNumber] Train NGO admin on dashboard, donor search, receipt download and campaign creation.
+[ListNumber] Share onboarding video and support process.
+[ListNumber] Mark tenant live only after checklist completion.
+Support Priority
+Examples
+SLA Suggestion
+P1 Critical
+Donation/payment not working
+Immediate to 4 hours
+P2 High
+Receipt generation failure, login issue, major report issue
+Same day
+P3 Medium
+Content update, campaign edit, user access help
+1-2 business days
+P4 Low
+Training, cosmetic change, general query
+2-5 business days
+[Heading1] 38. Data Migration Strategy
+Data Type
+Migration Method
+Validation
+Donor Excel
+CSV template import
+Mobile/email duplicate check
+Past receipts
+Optional historical import
+Receipt numbers preserved if available
+Campaigns
+Manual import or CSV
+Slug uniqueness and images
+Payment history
+Gateway export mapping
+Transaction ID uniqueness
+Users
+Manual creation
+Role confirmation
+Media/images
+Bulk upload folder mapping
+Compression and public URL verification
+[Heading1] 39. Custom Development Policy
+Custom development is profitable but dangerous if uncontrolled. It can convert SaaS back into agency chaos. Every custom request must be classified.
+Request Type
+Decision
+Useful for 70%+ NGOs
+Add to roadmap as core feature
+Useful for one large NGO only
+Charge custom development and keep behind feature flag
+Breaks product architecture
+Reject or redesign
+Can be solved by report/export
+Do not build custom screen
+Can be solved by training
+Do not build feature
+Urgent compliance/security issue
+Prioritize regardless of client size
+[Heading1] 40. Five-Year Strategic Moat
+The moat is not the website. The moat is operational data and workflow dependency.
+[ListBullet] Donor histories become difficult to leave.
+[ListBullet] Receipt archives become operationally critical.
+[ListBullet] Campaign data shows donor preferences and cause performance.
+[ListBullet] Reports become trustee/CA workflow dependencies.
+[ListBullet] NGOs train staff on the platform, increasing switching cost.
+[ListBullet] AI improves with structured donor/campaign data.
+[ListBullet] Partnerships with consultants and CAs create distribution moat.
+Year
+Moat Building Objective
+Year 1
+Product stability and first 250 NGOs
+Year 2
+Partner ecosystem and 500+ NGOs
+Year 3
+Donor intelligence and national recognition
+Year 4
+International Indian-origin nonprofit expansion
+Year 5
+Sector infrastructure and enterprise-grade NGO OS
