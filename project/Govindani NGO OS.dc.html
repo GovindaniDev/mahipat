@@ -311,12 +311,9 @@
               </div>
               <div style="display:flex; gap:8px;">
                 <button onClick="{{ toggleFilters }}" style="display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border:1px solid var(--border-base); background:#fff; cursor:pointer; border-radius:12px; font-family:var(--font-sans); font-size:14px; font-weight:600; color:var(--text-body);">{{ filterIcon }} Filters</button>
-                <button onClick="{{ toggleCondDonations }}" style="display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border:1px solid var(--border-base); background:#fff; cursor:pointer; border-radius:12px; font-family:var(--font-sans); font-size:14px; font-weight:600; color:var(--text-body);">{{ condFilterIcon }} AND/OR Filter</button>
                 <button onClick="{{ openOffline }}" style="display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border:none; cursor:pointer; border-radius:12px; font-family:var(--font-sans); font-size:14px; font-weight:600; color:#fff; background:var(--primary-gradient); box-shadow:0 2px 8px rgba(255,90,31,0.30);">{{ plusIcon }} Offline Donation</button>
               </div>
             </div>
-
-            {{ condDonationsEl }}
 
             <div style="position:relative;">
               <span style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-faint); display:flex;">{{ searchIcon }}</span>
@@ -324,12 +321,16 @@
             </div>
 
             <sc-if value="{{ filtersOpen }}" hint-placeholder-val="{{ false }}">
-              <div style="background:#fff; border:1px solid var(--border-subtle); border-radius:16px; box-shadow:var(--shadow-card); padding:20px;">
+              <div style="background:#fff; border:1px solid var(--border-subtle); border-radius:16px; box-shadow:var(--shadow-card); padding:20px; display:flex; flex-direction:column; gap:16px;">
                 <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px;">
                   <x-import component-from-global-scope="MahipatsinhFoundationDesignSystem_49bc15.Select" label="Payment Status" options="{{ optStatus }}" hint-size="100%,68px"></x-import>
                   <x-import component-from-global-scope="MahipatsinhFoundationDesignSystem_49bc15.Select" label="Donation Type" options="{{ optType }}" hint-size="100%,68px"></x-import>
                   <x-import component-from-global-scope="MahipatsinhFoundationDesignSystem_49bc15.Select" label="Payment Mode" options="{{ optMode }}" hint-size="100%,68px"></x-import>
                   <x-import component-from-global-scope="MahipatsinhFoundationDesignSystem_49bc15.Select" label="80G Certificate" options="{{ opt80g }}" hint-size="100%,68px"></x-import>
+                </div>
+                <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
+                  <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-faint); margin-bottom:10px;">Advanced Conditions</div>
+                  {{ condDonationsEl }}
                 </div>
               </div>
             </sc-if>
@@ -382,13 +383,26 @@
                 <p style="margin:3px 0 0; font-size:14px; color:var(--text-muted);">{{ donorTotalLabel }}</p>
               </div>
               <div style="display:flex; gap:8px;">
-                <button onClick="{{ toggleCondDonors }}" style="display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border:1px solid var(--border-base); background:#fff; cursor:pointer; border-radius:12px; font-family:var(--font-sans); font-size:14px; font-weight:600; color:var(--text-body);">{{ condFilterIcon }} AND/OR Filter</button>
+                <button onClick="{{ toggleDonorFilters }}" style="display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border:1px solid var(--border-base); background:#fff; cursor:pointer; border-radius:12px; font-family:var(--font-sans); font-size:14px; font-weight:600; color:var(--text-body);">{{ filterIcon }} Filters</button>
                 <button style="display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border:1px solid var(--border-base); background:#fff; cursor:pointer; border-radius:12px; font-family:var(--font-sans); font-size:14px; font-weight:600; color:var(--text-body);">{{ downloadIcon }} Export CSV</button>
                 <button onClick="{{ openAddDonor }}" style="display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border:none; cursor:pointer; border-radius:12px; font-family:var(--font-sans); font-size:14px; font-weight:600; color:#fff; background:var(--primary-gradient); box-shadow:0 2px 8px rgba(255,90,31,0.30);">{{ userPlusIconWhite }} Add Donor</button>
               </div>
             </div>
 
-            {{ condDonorsEl }}
+            <sc-if value="{{ donorFiltersOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#fff; border:1px solid var(--border-subtle); border-radius:16px; box-shadow:var(--shadow-card); padding:20px; display:flex; flex-direction:column; gap:16px;">
+                <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px;">
+                  <x-import component-from-global-scope="MahipatsinhFoundationDesignSystem_49bc15.Select" label="Donor Type" options="{{ optDonorType }}" hint-size="100%,68px"></x-import>
+                  <x-import component-from-global-scope="MahipatsinhFoundationDesignSystem_49bc15.Select" label="80G Eligible" options="{{ opt80g }}" hint-size="100%,68px"></x-import>
+                  <x-import component-from-global-scope="MahipatsinhFoundationDesignSystem_49bc15.Select" label="Last Donation" options="{{ optLastDonation }}" hint-size="100%,68px"></x-import>
+                  <x-import component-from-global-scope="MahipatsinhFoundationDesignSystem_49bc15.Select" label="Donation Count" options="{{ optDonorCount }}" hint-size="100%,68px"></x-import>
+                </div>
+                <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
+                  <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-faint); margin-bottom:10px;">Advanced Conditions</div>
+                  {{ condDonorsEl }}
+                </div>
+              </div>
+            </sc-if>
 
             <sc-if value="{{ donorHasHidden }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex; align-items:center; gap:12px; padding:13px 18px; border-radius:14px; background:var(--amber-50); border:1px solid rgba(217,119,6,0.22);">
@@ -2608,6 +2622,7 @@ class Component extends DCLogic {
     fundTab: 'campaigns',
     commTab: 'logs',
     filtersOpen: false,
+    donorFiltersOpen: false,
     donationQuery: '',
     donationPage: 0,
     donorQuery: '',
@@ -3130,6 +3145,7 @@ class Component extends DCLogic {
   openDonate = () => this.setState({ donateOpen: true, donateStep: 1, donateName: '', donatePhone: '', donateAmount: 2500 });
   closeDonate = () => this.setState({ donateOpen: false });
   toggleFilters = () => this.setState((s) => ({ filtersOpen: !s.filtersOpen }));
+  toggleDonorFilters = () => this.setState((s) => ({ donorFiltersOpen: !s.donorFiltersOpen }));
   openOffline = () => this.setState({ donateOpen: true, donateStep: 1, donateName: '', donatePhone: '', donateAmount: 5000 });
   setDonationQuery = (e) => this.setState({ donationQuery: e.target.value });
   setDonationPage = (p) => this.setState({ donationPage: p });
@@ -4394,6 +4410,11 @@ class Component extends DCLogic {
       toggleCondDonations: () => this.toggleCond('donations'),
       toggleCondFundraising: () => this.toggleCond('fundraising'),
       condFilterIcon: this.icon('filter', 15),
+      donorFiltersOpen: this.state.donorFiltersOpen,
+      toggleDonorFilters: this.toggleDonorFilters,
+      optDonorType: [{ label: 'All Types', value: '' }, { label: 'Individual', value: 'Individual' }, { label: 'Organization', value: 'Organization' }, { label: 'Trust / Foundation', value: 'Trust' }],
+      optLastDonation: [{ label: 'Any Time', value: '' }, { label: 'Last 30 days', value: '30' }, { label: 'Last 90 days', value: '90' }, { label: 'Last 180 days', value: '180' }, { label: 'Last 1 year', value: '365' }, { label: 'Over 1 year ago', value: 'old' }],
+      optDonorCount: [{ label: 'Any Count', value: '' }, { label: '1 gift', value: '1' }, { label: '2–5 gifts', value: '2-5' }, { label: '6–20 gifts', value: '6-20' }, { label: '20+ gifts', value: '20+' }],
     };
   }
   matrixCell(v) {
