@@ -2099,7 +2099,10 @@
                 <h2 style="margin:0; font-size:24px; font-weight:700; color:var(--text-strong); letter-spacing:-0.01em;">Case Management</h2>
                 <p style="margin:3px 0 0; font-size:14px; color:var(--text-muted);">Beneficiary cases, fundraising progress, verification &amp; impact stories</p>
               </div>
-              <button onClick="{{ openNewCase }}" style="display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border:none; cursor:pointer; border-radius:12px; font-family:var(--font-sans); font-size:14px; font-weight:600; color:#fff; background:var(--primary-gradient); box-shadow:0 2px 8px rgba(255,90,31,0.30);">{{ plusIcon }} New Case</button>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <button onClick="{{ openCampaign }}" style="display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border:1px solid var(--primary); cursor:pointer; border-radius:12px; font-family:var(--font-sans); font-size:14px; font-weight:600; color:var(--primary); background:#fff;">{{ megaphoneIcon }} New Campaign</button>
+                <button onClick="{{ openNewCase }}" style="display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border:none; cursor:pointer; border-radius:12px; font-family:var(--font-sans); font-size:14px; font-weight:600; color:#fff; background:var(--primary-gradient); box-shadow:0 2px 8px rgba(255,90,31,0.30);">{{ plusIcon }} New Case</button>
+              </div>
             </div>
 
             <sc-if value="{{ caseStarterLimit }}" hint-placeholder-val="{{ false }}">
@@ -2610,7 +2613,7 @@ class Component extends DCLogic {
     donorQuery: '',
     donorSegment: 'All',
     recordOpen: false,
-    recordForm: { donor: '', amount: '', cause: 'General Donation', mode: 'UPI', bank: 'HDFC Main Donation A/c', ref: '', source: 'Manual', fundraiser: '', eighty: true },
+    recordForm: { donor: '', amount: '', cause: 'General Donation', mode: 'UPI', bank: 'HDFC Main Donation A/c', ref: '', source: 'Manual', fundraiser: '', eighty: true, donationType: 'One-Time', debitDate: '5th', frequency: 'Monthly' },
     addDonorOpen: false,
     addDonorType: 'Individual',
     profileTab: 'overview',
@@ -2636,6 +2639,8 @@ class Component extends DCLogic {
     caseVisible: { 'CASE-2026-0042': true, 'CASE-2026-0041': true, 'CASE-2026-0040': true, 'CASE-2026-0039': true, 'CASE-2026-0036': true },
     caseOrder: ['CASE-2026-0042', 'CASE-2026-0040', 'CASE-2026-0041', 'CASE-2026-0039', 'CASE-2026-0036'],
     saTab: 'tenants',
+    milestones: [{ amt: '', comm: '', how: 'Lump Sum' }],
+    milestoneCommType: 'Percentage',
   };
 
   setSaTab = (k) => this.setState({ saTab: k });
@@ -3112,6 +3117,16 @@ class Component extends DCLogic {
     if (!pan || pan.length < 6 || /missing|—/i.test(pan)) return pan;
     return pan.slice(0, 4) + '••••' + pan.slice(-2);
   };
+  maskPhone = (p) => {
+    if (!p || typeof p !== 'string') return p;
+    const m = p.match(/^(\+91\s?\d{5})\d{5,}$/);
+    if (m) return m[1] + ' XXXXX';
+    if (p.replace(/\D/g, '').length >= 10) return p.slice(0, 5) + 'XXXXX';
+    return p;
+  };
+  addMilestone = () => this.setState((s) => ({ milestones: [...s.milestones, { amt: '', comm: '', how: 'Lump Sum' }] }));
+  removeMilestone = (i) => this.setState((s) => ({ milestones: s.milestones.filter((_, idx) => idx !== i) }));
+  setMilestone = (i, k, v) => this.setState((s) => ({ milestones: s.milestones.map((m, idx) => idx === i ? { ...m, [k]: v } : m) }));
   openDonate = () => this.setState({ donateOpen: true, donateStep: 1, donateName: '', donatePhone: '', donateAmount: 2500 });
   closeDonate = () => this.setState({ donateOpen: false });
   toggleFilters = () => this.setState((s) => ({ filtersOpen: !s.filtersOpen }));
@@ -3264,7 +3279,7 @@ class Component extends DCLogic {
     const cashIneligible = d[4] === 'CASH' && Number(d[5]) > 2000;
     const eligible = d[7] && !cashIneligible;
     return {
-    id: d[0], donor: d[1], phone: d[2], type: d[3], mode: d[4], amount: this.fmtRs(d[5]),
+    id: d[0], donor: d[1], phone: this.maskPhone(d[2]), type: d[3], mode: d[4], amount: this.fmtRs(d[5]),
     statusLabel: d[6].charAt(0) + d[6].slice(1).toLowerCase(), date: d[8],
     typeStyle: this.typePill(d[3]), statusStyle: this.statusPill(d[6]),
     tickEl: cashIneligible
@@ -3279,7 +3294,7 @@ class Component extends DCLogic {
     const score = d[8];
     const scoreColor = score >= 90 ? 'var(--orange-600)' : score >= 70 ? 'var(--blue-600)' : score >= 50 ? 'var(--green-600)' : score >= 20 ? 'var(--amber-600)' : 'var(--gray-500)';
     return {
-      name: d[0], phone: d[1], type: d[2], segment: d[3], total: this.fmtRs(d[4]), gifts: d[5], last: d[6],
+      name: d[0], phone: this.maskPhone(d[1]), type: d[2], segment: d[3], total: this.fmtRs(d[4]), gifts: d[5], last: d[6],
       initials: d[0].split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase(),
       segStyle: this.segPill(d[3]),
       avatarStyle: `width:34px; height:34px; flex-shrink:0; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff; background:linear-gradient(135deg, ${scoreColor}, ${scoreColor});`,
@@ -3294,13 +3309,13 @@ class Component extends DCLogic {
     this.openDetail({
       title: 'Donation Detail', size: 'md', kind: 'donation',
       headId: d[0], headBig: this.fmtRs(d[5]), badge: d[6], donorName: d[1],
-      fields: [f('Donor', d[1]), f('Phone', d[2]), f('Type', d[3]), f('Payment Mode', d[4]), f('Campaign / Cause', d[9]), f('Received In', d[10]), f('Source', d[11]), f('80G Certificate', d[7] ? 'Generated' : 'Not requested'), f('Date', d[8]), f('Financial Year', '2026-2027')],
+      fields: [f('Donor', d[1]), f('Phone', this.maskPhone(d[2])), f('Type', d[3]), f('Payment Mode', d[4]), f('Campaign / Cause', d[9]), f('Received In', d[10]), f('Source', d[11]), f('80G Certificate', d[7] ? 'Generated' : 'Not requested'), f('Date', d[8]), f('Financial Year', '2026-2027')],
     });
   }
   openDonorDetail(d) {
     this.openDetail({
       title: 'Donor 360° Profile', size: 'lg', kind: 'donor',
-      donorName: d[0], donorType: d[2], segment: d[3], score: d[8], total: this.fmtRs(d[4]), gifts: d[5], last: d[6], panOk: d[7], phone: d[1],
+      donorName: d[0], donorType: d[2], segment: d[3], score: d[8], total: this.fmtRs(d[4]), gifts: d[5], last: d[6], panOk: d[7], phone: this.maskPhone(d[1]),
     });
   }
 
@@ -3334,7 +3349,7 @@ class Component extends DCLogic {
           h('div', { style: { width: 54, height: 54, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700, color: '#fff', background: `linear-gradient(135deg, ${scoreColor}, ${scoreColor})`, flexShrink: 0 } }, d.donorName.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()),
           h('div', { style: { flex: 1 } },
             h('div', { style: { fontSize: 18, fontWeight: 700, color: 'var(--text-strong)' } }, d.donorName),
-            h('div', { style: { fontSize: 13, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' } }, d.phone)),
+            h('div', { style: { fontSize: 13, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' } }, this.maskPhone(d.phone))),
           h('div', { style: { textAlign: 'center' } },
             h('div', { style: { fontSize: 28, fontWeight: 800, color: scoreColor, fontFamily: 'var(--font-mono)', lineHeight: 1 } }, d.score),
             h('div', { style: { fontSize: 10, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 } }, 'NDI Score'))),
@@ -3382,6 +3397,7 @@ class Component extends DCLogic {
       h(NS.Button, { key: 'c', variant: 'secondary', onClick: this.closeRecord }, 'Cancel'),
       h(NS.Button, { key: 's', variant: 'primary', icon: this.icon('fileText', 14, '#fff'), onClick: this.closeRecord }, 'Save & Generate Receipt'),
     ];
+    const isRecurring = f.donationType === 'Recurring';
     const body = h('div', null,
       h('div', { style: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 13px', background: 'var(--blue-50)', borderRadius: 10, marginBottom: 16, fontSize: 12, color: 'var(--blue-700)' } },
         this.icon('alert', 15, 'var(--blue-600)'), 'Manual / offline entry — cash, cheque, bank transfer or UPI received outside the website.'),
@@ -3389,6 +3405,10 @@ class Component extends DCLogic {
         this.field('Donor', h('div', { style: { display: 'flex', gap: 6 } }, this.inputCtl(f.donor, set('donor'), { placeholder: 'Search or create donor…' }), h('button', { onClick: this.openAddDonor, title: 'New donor', style: { flexShrink: 0, width: 42, border: '1px solid var(--border-base)', borderRadius: 12, background: 'var(--surface-sunken)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' } }, this.icon('userPlus', 16, 'var(--primary)'))), { required: true, full: true }),
         this.field('Amount (₹)', this.inputCtl(f.amount, set('amount'), { type: 'number', mono: true, placeholder: '0' }), { required: true }),
         this.field('Donation Date', this.inputCtl('2026-06-14', () => {}, { type: 'date' }), { required: true }),
+        this.field('Donation Type', this.selectCtl(f.donationType, set('donationType'), ['One-Time', 'Recurring']), { required: true }),
+        isRecurring && this.field('Debit Date', this.selectCtl(f.debitDate, set('debitDate'), ['1st', '5th', '10th', '15th', '20th', '25th', '28th']), { required: true }),
+        isRecurring && this.field('Frequency', this.selectCtl(f.frequency, set('frequency'), ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']), { required: true }),
+        isRecurring && h('div', { key: 'rec-note', style: { gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: 8, padding: '9px 13px', background: 'var(--orange-50)', borderRadius: 10, fontSize: 12, color: 'var(--orange-800)', border: '1px solid rgba(255,90,31,0.15)' } }, this.icon('refresh', 13, 'var(--orange-600)'), `Recurring debit on the ${f.debitDate} of each month — ${f.frequency}`),
         this.field('Campaign / Cause', this.selectCtl(f.cause, set('cause'), ['General Donation', 'Education Fund', 'Annadanam', 'Medical Relief', 'Women Empowerment', 'CSR — Skilling']), { required: true }),
         this.field('Payment Mode', this.selectCtl(f.mode, set('mode'), ['Cash', 'Cheque', 'Bank', 'UPI', 'Gateway', 'QR']), { required: true }),
         this.field('Bank Account Received In', this.selectCtl(f.bank, set('bank'), ['HDFC Main Donation A/c', 'ICICI CSR A/c', 'Cash Box', 'FCRA A/c — SBI']), { required: true }),
@@ -3462,7 +3482,7 @@ class Component extends DCLogic {
     };
     const tline = (notLast) => `width:2px; flex:1; min-height:${notLast ? '18px' : '0'}; background:var(--border-base);`;
     return {
-      name: d[0], phone: d[1], type: d[2], segment: d[3], score, scoreColor,
+      name: d[0], phone: this.maskPhone(d[1]), type: d[2], segment: d[3], score, scoreColor,
       code: 'DR-' + String(1000 + d[5] * 13).padStart(6, '0'),
       initials: d[0].split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase(),
       panMissing: !d[7],
@@ -3808,6 +3828,13 @@ class Component extends DCLogic {
       ['Status', 'select', ['DRAFT', 'PUBLISHED', 'PAUSED', 'CLOSED'], { required: true }],
       ['Short Description (English)', 'textarea', { placeholder: 'Brief description shown on campaign cards' }],
       ['Full Description (English)', 'textarea', { placeholder: 'Detailed campaign description (HTML supported)' }],
+      ['Short Description (Hindi)', 'textarea', { placeholder: 'संक्षिप्त विवरण जो अभियान कार्ड पर दिखाई देगा' }],
+      ['Full Description (Hindi)', 'textarea', { placeholder: 'विस्तृत अभियान विवरण (HTML समर्थित)' }],
+      ['~Recommended Campaigns', 'sec'],
+      ['note', 'note', 'Select campaigns to appear as "You might also like" suggestions on this campaign\'s page. Leave empty to use auto-recommendations.'],
+      ['Recommended Campaign 1', 'select', ['— none —', 'Educate 500 Girls — Phase 2', 'Daily Annadanam Kitchen', 'Medical Relief — Monsoon', 'Women Skilling Centre', 'Gaushala Fodder Fund']],
+      ['Recommended Campaign 2', 'select', ['— none —', 'Educate 500 Girls — Phase 2', 'Daily Annadanam Kitchen', 'Medical Relief — Monsoon', 'Women Skilling Centre', 'Gaushala Fodder Fund']],
+      ['Recommended Campaign 3', 'select', ['— none —', 'Educate 500 Girls — Phase 2', 'Daily Annadanam Kitchen', 'Medical Relief — Monsoon', 'Women Skilling Centre', 'Gaushala Fodder Fund']],
       ['~Financial Settings', 'sec'],
       ['Goal Amount (₹)', 'input', { type: 'number', mono: true, placeholder: '500000', required: true }],
       ['Minimum Donation (₹)', 'input', { type: 'number', mono: true, placeholder: '100' }],
@@ -3824,7 +3851,9 @@ class Component extends DCLogic {
       ['Assured Campaign', 'toggle', false],
       ['Featured Campaign', 'toggle', false],
       ['Common (homepage hero)', 'toggle', false],
+      ['note', 'note', 'Enabling "Common" automatically removes the Common badge from the previously marked campaign — only one campaign can be the homepage hero at a time.'],
       ['Active (public)', 'toggle', true],
+      ['note', 'note', 'Plan limit: Starter — 2 active campaigns · Growth — 5 active campaigns · Pro / Enterprise — unlimited. Draft & closed campaigns do not count against the limit.'],
       ['~Fundraiser Assignment', 'sec'],
       ['Assign Fundraiser Group', 'select', ['— none —', 'Field Team A', 'CSR Connect Partners', 'Volunteer Circle', 'Telecaller Pool'], { hint: 'Groups assign many fundraisers at once' }],
       ['Or Individual Fundraiser', 'select', ['', 'Ravi Kumar', 'Seva Connect Agency', 'Priya (Volunteer)'], {}],
@@ -3860,7 +3889,7 @@ class Component extends DCLogic {
       ['Goal to Reach (₹)', 'input', { type: 'number', mono: true, placeholder: '500000' }],
       ['Commission Type', 'select', ['Percentage', 'Flat per donation', 'Milestone-based', 'No commission']],
       ['Commission Rate', 'input', { mono: true, placeholder: '5% or ₹100' }],
-      ['Milestone Offer', 'textarea', { placeholder: 'e.g. ₹2,000 bonus at ₹1L raised; ₹5,000 at ₹3L…' }],
+      ['Milestone Tiers', 'milestone-builder', {}],
     ] },
     collectpan: { title: 'Collect PAN & Address', size: 'md', submit: 'Send Secure Link', fields: [
       ['Send To', 'select', ['Selected donors', 'All missing-PAN donors (38)', 'All missing-address donors (64)']],
@@ -3886,6 +3915,26 @@ class Component extends DCLogic {
         if (type === 'toggle') return h('label', { key: i, style: { gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', cursor: 'pointer' } },
           h('input', { type: 'checkbox', defaultChecked: !!opt, style: { width: 18, height: 18, accentColor: 'var(--primary)' } }),
           h('span', { style: { fontSize: 13, fontWeight: 500, color: 'var(--text-body)' } }, label));
+        if (type === 'milestone-builder') {
+          const milestones = this.state.milestones;
+          return h('div', { key: i, style: { gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: 10 } },
+            h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 } },
+              h('div', { style: { fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' } }, 'Milestone Tiers'),
+              h('button', { onClick: this.addMilestone, style: { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 11px', border: '1px dashed var(--primary)', borderRadius: 9999, background: 'var(--primary-soft)', color: 'var(--primary)', fontSize: 12, fontWeight: 600, cursor: 'pointer' } }, this.icon('plus', 13, 'var(--primary)'), 'Add Tier')),
+            h('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 8, alignItems: 'center', marginBottom: 4 } },
+              h('div', { style: { fontSize: 11, fontWeight: 700, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.04em' } }, 'Amount Target (₹)'),
+              h('div', { style: { fontSize: 11, fontWeight: 700, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.04em' } }, 'Commission (₹)'),
+              h('div', { style: { fontSize: 11, fontWeight: 700, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.04em' } }, 'How Paid'),
+              h('div', null)),
+            ...milestones.map((m, idx) =>
+              h('div', { key: idx, style: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 8, alignItems: 'center', padding: '10px 12px', background: 'var(--surface-sunken)', borderRadius: 10, border: '1px solid var(--border-base)' } },
+                h('input', { type: 'number', value: m.amt, onChange: (e) => this.setMilestone(idx, 'amt', e.target.value), placeholder: '100000', style: { width: '100%', padding: '8px 10px', border: '1px solid var(--border-base)', borderRadius: 8, fontSize: 13, fontFamily: 'var(--font-mono)', outline: 'none', background: '#fff' } }),
+                h('input', { type: 'number', value: m.comm, onChange: (e) => this.setMilestone(idx, 'comm', e.target.value), placeholder: '2000', style: { width: '100%', padding: '8px 10px', border: '1px solid var(--border-base)', borderRadius: 8, fontSize: 13, fontFamily: 'var(--font-mono)', outline: 'none', background: '#fff' } }),
+                h('select', { value: m.how, onChange: (e) => this.setMilestone(idx, 'how', e.target.value), style: { width: '100%', padding: '8px 10px', border: '1px solid var(--border-base)', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer' } },
+                  ['Lump Sum', 'Per Transaction', 'Monthly Payout', 'After Campaign'].map((opt) => h('option', { key: opt, value: opt }, opt))),
+                h('button', { onClick: () => this.removeMilestone(idx), disabled: milestones.length === 1, title: 'Remove tier', style: { width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-base)', borderRadius: 8, background: milestones.length === 1 ? 'var(--surface-sunken)' : 'var(--red-50)', cursor: milestones.length === 1 ? 'not-allowed' : 'pointer', color: milestones.length === 1 ? 'var(--text-faint)' : 'var(--red-600)', flexShrink: 0 } }, this.icon('x', 14, milestones.length === 1 ? 'var(--text-faint)' : 'var(--red-600)')))),
+            h('div', { style: { display: 'flex', alignItems: 'center', gap: 7, padding: '8px 12px', background: 'var(--blue-50)', borderRadius: 8, fontSize: 11, color: 'var(--blue-700)' } }, this.icon('fileText', 13, 'var(--blue-600)'), 'Milestone tiers are auto-included in fundraiser performance reports and payout ledger.'));
+        }
         let control;
         if (type === 'select') control = this.uSelect(noop, opt, opt[0]);
         else if (type === 'textarea') control = h('textarea', { rows: 2, placeholder: opt.placeholder || '', style: { width: '100%', padding: '10px 12px', border: '1px solid var(--border-base)', borderRadius: 12, fontSize: 14, outline: 'none', fontFamily: 'var(--font-sans)', resize: 'vertical' } });
@@ -4490,7 +4539,7 @@ class Component extends DCLogic {
     ];
     const medal = ['var(--amber-500)', 'var(--gray-300)', 'var(--orange-300)'];
     const topDonors = topDonorsData.map((d, i) => ({
-      rank: i + 1, name: d[0], phone: d[1], total: d[2],
+      rank: i + 1, name: d[0], phone: this.maskPhone(d[1]), total: d[2],
       rowStyle: `display:flex; align-items:center; gap:12px; padding:13px 16px; ${i < topDonorsData.length - 1 ? 'border-bottom:1px solid rgba(0,0,0,0.04);' : ''}`,
       rankStyle: `display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; font-size:11px; font-weight:700; flex-shrink:0; color:${i < 3 ? '#fff' : 'var(--text-muted)'}; background:${i < 3 ? medal[i] : 'var(--gray-100)'};`,
     }));
@@ -4758,8 +4807,19 @@ class Component extends DCLogic {
         { n: '4', title: 'Attempt 4 — Configurable until filled', desc: 'System continues until data received or max attempts reached', dotBg: 'var(--gray-100)', dotFg: 'var(--gray-500)', lineStyle: 'width:0;' },
       ],
       // ---- Fundraising ----
-      openCampaign: () => this.openForm('campaign'),
+      openCampaign: () => {
+        const plan = this.state.plan || 'Starter';
+        const activeCampaigns = 4; // count of PUBLISHED campaigns from demo data
+        const limits = { Starter: 2, Growth: 5 };
+        const limit = limits[plan];
+        if (limit !== undefined && activeCampaigns >= limit) {
+          this.showToast(`${plan} plan allows up to ${limit} active campaigns — upgrade to Growth or higher for more.`);
+          return;
+        }
+        this.openForm('campaign');
+      },
       openAddFundraiser: () => this.openForm('fundraiser'),
+      megaphoneIcon: this.icon('megaphone', 16, 'var(--primary)'),
       linkIconSm: this.icon('link', 13, 'var(--primary)'),
       infoIcon: this.icon('alert', 18, 'var(--blue-600)'),
       fundIsCampaigns: this.state.fundTab === 'campaigns',
